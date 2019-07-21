@@ -68,7 +68,7 @@ func (p *provider) Provides() []string {
 func (p *provider) Close() error {
 	arr := p.Provides()
 	for _, k := range arr {
-		c := GetDb(k)
+		c := getSingleton(k, false)
 		if c != nil {
 			c.Close()
 		}
@@ -86,10 +86,13 @@ func setSingleton(diName string, conf config.DbConfig) (ins *xorm.EngineGroup, e
 }
 
 //获取单例
-func getSingleton(diName string) *xorm.EngineGroup {
+func getSingleton(diName string, lazy bool) *xorm.EngineGroup {
 	rc := container.App.GetSingleton(diName)
 	if rc != nil {
 		return rc.(*xorm.EngineGroup)
+	}
+	if lazy == false {
+		return nil
 	}
 
 	Pr.mu.RLock()
@@ -109,5 +112,5 @@ func getSingleton(diName string) *xorm.EngineGroup {
 //外部通过注入别名获取资源，解耦资源的关系
 func GetDb(args ...string) *xorm.EngineGroup {
 	diName := helper.GetDiName(Pr.dn, args...)
-	return getSingleton(diName)
+	return getSingleton(diName, true)
 }

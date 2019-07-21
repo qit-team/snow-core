@@ -68,7 +68,7 @@ func (p *provider) Provides() []string {
 func (p *provider) Close() error {
 	arr := p.Provides()
 	for _, k := range arr {
-		c := GetRedis(k)
+		c := getSingleton(k, false)
 		if c != nil {
 			c.Close()
 		}
@@ -86,10 +86,13 @@ func setSingleton(diName string, conf config.RedisConfig) (ins *redis_pool.Repli
 }
 
 //获取单例
-func getSingleton(diName string) *redis_pool.ReplicaPool {
+func getSingleton(diName string, lazy bool) *redis_pool.ReplicaPool {
 	rc := container.App.GetSingleton(diName)
 	if rc != nil {
 		return rc.(*redis_pool.ReplicaPool)
+	}
+	if lazy == false {
+		return nil
 	}
 
 	Pr.mu.RLock()
@@ -109,5 +112,5 @@ func getSingleton(diName string) *redis_pool.ReplicaPool {
 //外部通过注入别名获取资源，解耦资源的关系
 func GetRedis(args ...string) *redis_pool.ReplicaPool {
 	diName := helper.GetDiName(Pr.dn, args...)
-	return getSingleton(diName)
+	return getSingleton(diName, true)
 }

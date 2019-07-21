@@ -3,11 +3,12 @@ package cache
 import (
 	"github.com/qit-team/snow-core/utils"
 	"context"
+	"github.com/qit-team/snow-core/redis"
 )
 
 const (
-	DefaultDiName     = "redis"
-	DefaultDriverType = "redis"
+	DefaultDiName     = redis.SingletonMain
+	DefaultDriverType = DriverTypeRedis
 	DefaultPrefix     = ""    //默认缓存key前缀
 	DefaultTTL        = 86400 //默认缓存时间
 )

@@ -5,7 +5,7 @@ import (
 	"github.com/qit-team/snow-core/kernel/container"
 	"github.com/hetiansu5/accesslog"
 	"sync"
-	"github.com/dropbox.backup/godropbox/errors"
+	"errors"
 	"github.com/qit-team/snow-core/helper"
 	"fmt"
 )
@@ -22,7 +22,7 @@ func init() {
 type provider struct {
 	mu sync.RWMutex
 	mp map[string]interface{} //配置
-	dn string //default name
+	dn string                 //default name
 }
 
 /**
@@ -75,10 +75,13 @@ func setSingleton(diName string, conf config.LogConfig) (ins *accesslog.AccessLo
 }
 
 //获取单例
-func getSingleton(diName string) *accesslog.AccessLogger {
+func getSingleton(diName string, lazy bool) *accesslog.AccessLogger {
 	rc := container.App.GetSingleton(diName)
 	if rc != nil {
 		return rc.(*accesslog.AccessLogger)
+	}
+	if lazy == false {
+		return nil
 	}
 
 	Pr.mu.RLock()
@@ -98,5 +101,5 @@ func getSingleton(diName string) *accesslog.AccessLogger {
 //外部通过注入别名获取资源，解耦资源的关系
 func GetAccessLogger(args ...string) *accesslog.AccessLogger {
 	diName := helper.GetDiName(Pr.dn, args...)
-	return getSingleton(diName)
+	return getSingleton(diName, true)
 }

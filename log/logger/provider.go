@@ -67,7 +67,7 @@ func (p *provider) Provides() []string {
 func (p *provider) Close() error {
 	arr := p.Provides()
 	for _, k := range arr {
-		logger := GetLogger(k)
+		logger := getSingleton(k, false)
 		if logger != nil {
 			log, ok := logger.Out.(*os.File)
 			if ok {
@@ -89,10 +89,13 @@ func setSingleton(diName string, conf config.LogConfig) (ins *logrus.Logger, err
 }
 
 //获取单例
-func getSingleton(diName string) *logrus.Logger {
+func getSingleton(diName string, lazy bool) *logrus.Logger {
 	rc := container.App.GetSingleton(diName)
 	if rc != nil {
 		return rc.(*logrus.Logger)
+	}
+	if lazy == false {
+		return nil
 	}
 
 	Pr.mu.RLock()
@@ -112,5 +115,5 @@ func getSingleton(diName string) *logrus.Logger {
 //外部通过注入别名获取资源，解耦资源的关系
 func GetLogger(args ...string) *logrus.Logger {
 	diName := helper.GetDiName(Pr.dn, args...)
-	return getSingleton(diName)
+	return getSingleton(diName, true)
 }

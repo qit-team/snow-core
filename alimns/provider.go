@@ -79,10 +79,13 @@ func setSingleton(diName string, conf config.MnsConfig) (ins ali_mns.MNSClient, 
 }
 
 //获取单例
-func getSingleton(diName string) ali_mns.MNSClient {
+func getSingleton(diName string, lazy bool) ali_mns.MNSClient {
 	rc := container.App.GetSingleton(diName)
 	if rc != nil {
 		return rc.(ali_mns.MNSClient)
+	}
+	if lazy == false {
+		return nil
 	}
 
 	Pr.mu.RLock()
@@ -102,5 +105,5 @@ func getSingleton(diName string) ali_mns.MNSClient {
 //外部通过注入别名获取资源，解耦资源的关系
 func GetMns(args ...string) ali_mns.MNSClient {
 	diName := helper.GetDiName(Pr.dn, args...)
-	return getSingleton(diName)
+	return getSingleton(diName, true)
 }
