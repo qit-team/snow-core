@@ -1,36 +1,27 @@
 package server
 
 import (
-	"github.com/qit-team/snow-core/config"
 	"fmt"
 	"github.com/qit-team/work"
 )
 
 func waitJobStop(job *work.Job) {
+	//等待结束
 	WaitStop()
 
 	//暂停新的Cron任务执行
 	job.Stop()
+
 	err := job.WaitStop(0)
 	if err != nil {
 		fmt.Println("wait stop error", err)
 	}
+
+	CloseService()
 }
 
 // Start Job Worker
-func StartJob(confFile, pidFile string, boot func(*config.Config) error, registerWorker func(*work.Job)) error {
-	//加载配置文件
-	conf, err := config.Load(confFile)
-	if err != nil {
-		return err
-	}
-
-	//容器初始化
-	err = boot(conf)
-	if err != nil {
-		return fmt.Errorf("container ini failed %s", err.Error())
-	}
-
+func StartJob(pidFile string, registerWorker func(*work.Job)) error {
 	//注册Job Worker
 	job := work.New()
 	registerWorker(job)

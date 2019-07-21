@@ -67,6 +67,10 @@ func ReadPidFile(path string) (int, error) {
 //阻塞等待程序内部的Stop通道信号
 func WaitStop() {
 	<-srv.stop
+}
+
+//关闭服务
+func CloseService() {
 	if srv.debug {
 		fmt.Println("close service")
 	}
@@ -136,7 +140,11 @@ func Stop() {
 	srv.stop <- true
 }
 
-func SetServerDebug(debug bool) error {
+func SetDebug(debug bool) {
 	srv.debug = debug
-	return nil
+	return
+}
+
+func GetDebug() bool {
+	return srv.debug
 }
