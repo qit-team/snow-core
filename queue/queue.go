@@ -25,7 +25,7 @@ func Register(driverType string, driver Instance) {
 	defer mu.Unlock()
 
 	if _, ok := drivers[driverType]; ok {
-		panic("queue.Register called twice for driver type:" + driverType)
+		panic("queue.Register called twice for driver " + driverType)
 	}
 	drivers[driverType] = driver
 }
@@ -35,11 +35,11 @@ func GetQueue(diName string, driverType string) (q Queue) {
 	mu.RLock()
 	instanceFunc, ok := drivers[driverType]
 	if !ok {
-		panic(fmt.Sprintf("queue.GetQueue driver type (%s) is not exist", driverType))
+		panic(fmt.Sprintf("queue.GetQueue unknown driver %s", driverType))
 	}
 	q = instanceFunc(diName)
 	if q == nil {
-		panic(fmt.Sprintf("queue.GetQueue driver (%s:%s) is nil", diName, driverType))
+		panic(fmt.Sprintf("queue.GetQueue unknown diName %s", diName))
 	}
 	return
 }

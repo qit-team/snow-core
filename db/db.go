@@ -1,7 +1,7 @@
 package db
 
 import (
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 	//_ "github.com/lib/pq" //postgres
 	//_ "github.com/mattn/go-sqlite3" //sqlite3
 	//_ "github.com/denisenkom/go-mssqldb" //mssql

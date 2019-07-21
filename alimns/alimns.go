@@ -12,8 +12,8 @@ func NewMnsClient(mnsConfig config.MnsConfig) (client ali_mns.MNSClient, err err
 	//2.1初始化mns client
 	defer func() {
 		if e := recover(); e != nil {
-			err = errors.New(fmt.Sprint(e))
-			fmt.Println("ali_mns client init error", err)
+			s := fmt.Sprintf("ali_mns client init panic: %s", fmt.Sprint(e))
+			err = errors.New(s)
 		}
 	}()
 

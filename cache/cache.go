@@ -24,7 +24,7 @@ func Register(driverType string, driver Instance) {
 	defer mu.Unlock()
 
 	if _, ok := drivers[driverType]; ok {
-		panic("cache.Register called twice for driver type:" + driverType)
+		panic("cache.Register called twice for driver " + driverType)
 	}
 	drivers[driverType] = driver
 }
@@ -34,11 +34,11 @@ func GetCache(diName string, driverType string) (q Cache) {
 	mu.RLock()
 	instanceFunc, ok := drivers[driverType]
 	if !ok {
-		panic(fmt.Sprintf("cache.GetCache driver type (%s) is not exist", driverType))
+		panic(fmt.Sprintf("cache.GetCache unknown driver %s", driverType))
 	}
 	q = instanceFunc(diName)
 	if q == nil {
-		panic(fmt.Sprintf("cache.GetCache driver (%s:%s) is nil", diName, driverType))
+		panic(fmt.Sprintf("cache.GetCache unknown diName %s", diName))
 	}
 	return
 }

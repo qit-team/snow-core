@@ -5,6 +5,7 @@ import (
 	"github.com/qit-team/snow-core/config"
 	"github.com/go-xorm/xorm"
 	"fmt"
+	//_ "github.com/go-sql-driver/mysql"
 )
 
 var engineGroup *xorm.EngineGroup
