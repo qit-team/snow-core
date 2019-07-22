@@ -5,6 +5,7 @@ import (
 	"github.com/qit-team/snow-core/config"
 	"github.com/go-xorm/xorm"
 	"fmt"
+	//go test时需要开启
 	//_ "github.com/go-sql-driver/mysql"
 )
 

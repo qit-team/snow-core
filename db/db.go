@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 	"github.com/go-xorm/xorm"
-	"github.com/go-xorm/core"
+	"xorm.io/core"
 	"errors"
 )
 
