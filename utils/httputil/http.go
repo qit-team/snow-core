@@ -62,7 +62,8 @@ func (c *myClient) Do(ctx context.Context, req *http.Request) (resp *http.Respon
  * GET Request对象
  * @param url 请求URL
  * @param params 请求参数
- * @param headers 可选 支持map[string]interface{}和[]string 如{"Token":"123"}或["Token:123"]
+ * @param headers 可选 支持map[string]interface{}和[]string eg.{"Token":"123"}或["Token:123"]
+ * @param options 可选 支持map[string]interface{} eg.{"timeout": 10}
  */
 func NewGetRequest(url string, params map[string]interface{}, args ...interface{}) (req *http.Request, err error) {
 	if params != nil {
@@ -129,6 +130,57 @@ func NewJsonPostRequest(url string, params map[string]interface{}, args ...inter
 	return
 }
 
+func Get(ctx context.Context, url string, params map[string]interface{}, args ...interface{}) (resp *http.Response, err error) {
+	timeout := getTimeout(args...)
+	client := NewClient(timeout)
+	req, err := NewGetRequest(url, params, args...)
+	if err != nil {
+		return
+	}
+	resp, err = client.Do(ctx, req)
+	return
+}
+
+func Post(ctx context.Context, url string, params map[string]interface{}, args ...interface{}) (resp *http.Response, err error) {
+	timeout := getTimeout(args...)
+	client := NewClient(timeout)
+	req, err := NewFormPostRequest(url, params, args...)
+	if err != nil {
+		return
+	}
+	resp, err = client.Do(ctx, req)
+	return
+}
+
+func PostJson(ctx context.Context, url string, params map[string]interface{}, args ...interface{}) (resp *http.Response, err error) {
+	timeout := getTimeout(args...)
+	client := NewClient(timeout)
+	req, err := NewJsonPostRequest(url, params, args...)
+	if err != nil {
+		return
+	}
+	resp, err = client.Do(ctx, req)
+	return
+}
+
+func Request(ctx context.Context, method string, url string, params map[string]interface{}, args ...interface{}) (resp *http.Response, err error) {
+	timeout := getTimeout(args...)
+	client := NewClient(timeout)
+	var req *http.Request
+	if strings.ToUpper(method) == "POST" {
+		req, err = NewFormPostRequest(url, params, args...)
+	} else if strings.ToUpper(method) == "POST/JSON" {
+		req, err = NewJsonPostRequest(url, params, args...)
+	} else {
+		req, err = NewGetRequest(url, params, args...)
+	}
+	if err != nil {
+		return
+	}
+	resp, err = client.Do(ctx, req)
+	return
+}
+
 //处理返回结果
 func DealResponse(resp *http.Response) (body []byte, err error) {
 	defer resp.Body.Close()
@@ -166,4 +218,28 @@ func StringListToMap(strArr []string) map[string]interface{} {
 		}
 	}
 	return m
+}
+
+//options
+func getOptions(args ...interface{}) (options map[string]interface{}) {
+	if len(args) > 1 {
+		options, _ = args[1].(map[string]interface{})
+	}
+	if options == nil {
+		options = make(map[string]interface{})
+	}
+	return
+}
+
+//timeout
+func getTimeout(args ...interface{}) time.Duration {
+	options := getOptions(args...)
+	var timeout int
+	if t, ok := options["timeout"]; ok {
+		timeout, _ = t.(int)
+	}
+	if timeout <= 0 {
+		timeout = 30
+	}
+	return time.Second * time.Duration(timeout)
 }

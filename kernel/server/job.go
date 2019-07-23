@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/qit-team/work"
+	"time"
 )
 
 func waitJobStop(job *work.Job) {
@@ -12,7 +13,7 @@ func waitJobStop(job *work.Job) {
 	//暂停新的Cron任务执行
 	job.Stop()
 
-	err := job.WaitStop(0)
+	err := job.WaitStop(60 * time.Second)
 	if err != nil {
 		fmt.Println("wait stop error", err)
 	}
