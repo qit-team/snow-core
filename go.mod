@@ -14,7 +14,7 @@ require (
 	github.com/hetiansu5/accesslog v1.0.0
 	github.com/hetiansu5/cores v1.0.0
 	github.com/hetiansu5/go-redis-pool v1.1.4
-	github.com/qit-team/work v0.3.3
+	github.com/qit-team/work v0.3.4
 	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/valyala/fasthttp v1.3.0 // indirect
