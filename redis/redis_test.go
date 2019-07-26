@@ -26,7 +26,7 @@ func init() {
 	}
 }
 
-func Test_Set(t *testing.T) {
+func TestGetSet(t *testing.T) {
 	value := 11
 	res, _ := client.Set("hts", value)
 	t.Log(res, reflect.TypeOf(res))

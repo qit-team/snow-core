@@ -1,3 +1,24 @@
+## v0.1.8(2019-07-26)
+
+### New Features
+- rediscache的单元测试案例
+
+### Changes
+- rediscache的Get返回优化。若key不存在之前是返回错误类型ErrNil,现在不返回错误，返回字符串为空
+
+### Bug Fix
+- 修复rediscache的SetMulti实现bug
+
+## v0.1.7(2019-07-25)
+
+### Changes
+- 更新qit-team/work包的版本号v0.3.3->v.0.3.4
+
+## v0.1.6(2019-07-24)
+
+### Bug Fix
+- 修复utils包http_query_build的对值非字符串的处理bug
+
 ## v0.1.5(2019-07-23)
 
 ### New Features

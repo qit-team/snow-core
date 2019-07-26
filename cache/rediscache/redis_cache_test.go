@@ -7,6 +7,7 @@ import (
 	"github.com/qit-team/snow-core/cache"
 	"testing"
 	"context"
+	"time"
 )
 
 var c cache.Cache
@@ -29,9 +30,9 @@ func init() {
 	c = cache.GetCache("redis", cache.DriverTypeRedis)
 }
 
-func TestGetSet(t *testing.T) {
+func TestGetSetDelete(t *testing.T) {
 	ctx := context.TODO()
-	key := "cache-test"
+	key := "test-cache"
 	value := "111"
 	ok, err := c.Set(ctx, key, value)
 	if err != nil {
@@ -57,6 +58,135 @@ func TestGetSet(t *testing.T) {
 		return
 	} else if !ok {
 		t.Error("delete is not ok")
+		return
+	}
+
+	v, err = c.Get(ctx, key)
+	if err != nil {
+		t.Error(err)
+		return
+	} else if v != "" {
+		t.Errorf("delete %s failed", key)
+		return
+	}
+}
+
+func TestSetMultiAndGetMulti(t *testing.T) {
+	ctx := context.TODO()
+	items := map[string]interface{}{
+		"test-key1": "111",
+		"test-key2": "222",
+	}
+	_, err := c.SetMulti(ctx, items, 1)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	m, err := c.GetMulti(ctx, "test-key1", "test-key2")
+	if err != nil {
+		t.Error(err)
+		return
+	} else if len(m) != 2 {
+		t.Error("get values's length is not enough")
+		return
+	}
+	var value interface{}
+	var ok bool
+	for k, v := range m {
+		if value, ok = items[k]; !ok {
+			t.Errorf("key %s is not exist", k)
+			return
+		}
+		if value != v {
+			t.Errorf("key %s is not same", k)
+			return
+		}
+	}
+
+	time.Sleep(time.Millisecond * 1100)
+	m, err = c.GetMulti(ctx, "test-key1", "test-key2")
+	if err != nil {
+		t.Error(err)
+		return
+	} else if len(m) != 2 {
+		t.Error("get values's length is not enough")
+		return
+	}
+
+	for k, v := range m {
+		if _, ok = items[k]; !ok {
+			t.Errorf("key %s is not exist", k)
+			return
+		}
+		if v != "" {
+			t.Errorf("key %s is not empty", k)
+			return
+		}
+	}
+}
+
+func TestDeleteMulti(t *testing.T) {
+	ctx := context.TODO()
+	items := map[string]interface{}{
+		"test-key3": "111",
+		"test-key4": "222",
+	}
+
+	c.SetMulti(ctx, items)
+
+	_, err := c.DeleteMulti(ctx, "test-key3", "test-key4")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	var ok bool
+	m, err := c.GetMulti(ctx, "test-key3", "test-key4")
+	if err != nil {
+		t.Error(err)
+		return
+	} else if len(m) != 2 {
+		t.Error("get values's length is not enough")
+		return
+	}
+
+	for k, v := range m {
+		if _, ok = items[k]; !ok {
+			t.Errorf("key %s is not exist", k)
+			return
+		}
+		if v != "" {
+			t.Errorf("key %s is not empty", k)
+			return
+		}
+	}
+}
+
+func TestExpireExist(t *testing.T) {
+	ctx := context.TODO()
+	key := "test-expire"
+	value := "222"
+	c.Set(ctx, key, value)
+
+	ok, err := c.IsExist(ctx, key)
+	if err != nil {
+		t.Error(err)
+		return
+	} else if !ok {
+		t.Errorf("key %s is not exist", key)
+		return
+	}
+
+	c.Expire(ctx, key, 1)
+	time.Sleep(time.Millisecond * 1100)
+
+	ok, err = c.IsExist(ctx, key)
+	if err != nil {
+		t.Error(err)
+		return
+	} else if ok {
+		t.Errorf("key %s is exist", key)
 		return
 	}
 }

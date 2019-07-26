@@ -46,7 +46,11 @@ func GetRedisCache(diName string) cache.Cache {
  * 注意事项，如果key值不存在的话，返回的是空字符串，而不是nil
  */
 func (c *RedisCache) Get(ctx context.Context, key string) (interface{}, error) {
-	return c.client.Get(key)
+	value, err := c.client.Get(key)
+	if err == redis_pool.ErrNil {
+		return "", nil
+	}
+	return value, err
 }
 
 func (c *RedisCache) GetMulti(ctx context.Context, keys ...string) (map[string]interface{}, error) {
@@ -69,11 +73,23 @@ func (c *RedisCache) Set(ctx context.Context, key string, value interface{}, ttl
 }
 
 func (c *RedisCache) SetMulti(ctx context.Context, items map[string]interface{}, ttl ...int) (bool, error) {
-	arr := make(map[string]interface{})
+	arr := make([]interface{}, 0)
 	for key, value := range items {
-		arr[key] = value
+		arr = append(arr, key, value)
 	}
-	return c.client.MSet(arr)
+	ok, err := c.client.MSet(arr...)
+	if err != nil {
+		return ok, err
+	}
+
+	t := cache.GetTTLOrDefault(ttl...)
+	if t > 0 {
+		t64 := int64(t)
+		for key, _ := range items {
+			c.client.Expire(key, t64)
+		}
+	}
+	return true, nil
 }
 
 func (c *RedisCache) Delete(ctx context.Context, key string) (bool, error) {
