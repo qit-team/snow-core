@@ -93,7 +93,6 @@ func (m *MnsQueue) Dequeue(ctx context.Context, key string) (message string, tok
 		//代表N秒内其他并发队列不可见这条消息
 		if ret, err1 := queueClient.ChangeMessageVisibility(resp.ReceiptHandle, DefaultVisibilityTimeout); err1 != nil {
 			err = err1
-			return
 		} else {
 			//处理resp.MessageBody 阿里这什么sdk 也不说明各个函数作用。。。暂时就按照demo例子里用到的函数写了
 			return resp.MessageBody, ret.ReceiptHandle, nil

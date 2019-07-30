@@ -12,7 +12,6 @@ import (
 var q queue.Queue
 
 func init() {
-	var err error
 	redisConf := config.RedisConfig{
 		Master: config.RedisBaseConfig{
 			Host: "127.0.0.1",
@@ -21,7 +20,7 @@ func init() {
 	}
 
 	//注册redis类
-	err = redis.Pr.Register("redis", redisConf)
+	err := redis.Pr.Register("redis", redisConf, true)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -30,6 +29,7 @@ func init() {
 }
 
 func TestEnqueue(t *testing.T) {
+	q := queue.GetQueue("redis", queue.DriverTypeRedis)
 	topic := "snow-topic-one"
 	ctx := context.TODO()
 	msg := "1"
@@ -62,6 +62,15 @@ func TestEnqueue(t *testing.T) {
 		t.Error("ack is not ok")
 		return
 	}
+
+	message, _, err = q.Dequeue(ctx, topic)
+	if err != nil {
+		t.Error(err)
+		return
+	} else if message != "" {
+		t.Error("message must be empty")
+		return
+	}
 }
 
 func TestBatchEnqueue(t *testing.T) {
@@ -82,7 +91,7 @@ func TestBatchEnqueue(t *testing.T) {
 		return
 	}
 	if message != messages[0] {
-		t.Errorf("message is not same %s", message)
+		t.Errorf("message is not same origin:%s real:%s", messages[0], message)
 		return
 	}
 
@@ -92,7 +101,18 @@ func TestBatchEnqueue(t *testing.T) {
 		return
 	}
 	if message != messages[1] {
-		t.Errorf("message is not same %s", message)
+		t.Errorf("message is not same origin:%s real:%s", messages[1], message)
+		return
+	}
+}
+
+func TestBatchEnqueueEmpty(t *testing.T) {
+	ctx := context.TODO()
+	topic := "snow-topic-batch"
+	messages := make([]string, 0)
+	_, err := q.BatchEnqueue(ctx, topic, messages)
+	if err == nil {
+		t.Error("empty message must return error")
 		return
 	}
 }
