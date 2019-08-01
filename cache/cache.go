@@ -33,6 +33,7 @@ func Register(driverType string, driver Instance) {
 func GetCache(diName string, driverType string) (q Cache) {
 	mu.RLock()
 	instanceFunc, ok := drivers[driverType]
+	mu.RUnlock()
 	if !ok {
 		panic(fmt.Sprintf("cache.GetCache unknown driver %s", driverType))
 	}

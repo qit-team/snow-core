@@ -34,7 +34,7 @@ func init() {
   echo json_encode($data);
  */
 func TestDoGet(t *testing.T) {
-	url := "http://xxx/test.php"
+	url := "http://weixin.hetiansu.com/test.php"
 	req, _ := NewGetRequest(url, nil)
 	response, err := client.Do(context.TODO(), req)
 	if err != nil {
@@ -52,7 +52,7 @@ func TestDoGet(t *testing.T) {
 }
 
 func TestPost(t *testing.T) {
-	url := "http://xxx/test.php"
+	url := "http://weixin.hetiansu.com/test.php"
 
 	//参数为nil
 	req, err := NewFormPostRequest(url, nil)
@@ -107,7 +107,7 @@ func TestPost(t *testing.T) {
 }
 
 func TestPostJsonData(t *testing.T) {
-	url := "http://xxx/test.php"
+	url := "http://weixin.hetiansu.com/test.php"
 
 	//参数为nil
 	req, err := NewJsonPostRequest(url, nil)

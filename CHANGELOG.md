@@ -1,3 +1,19 @@
+## v0.1.9(2019-08-01)
+
+### New Features
+- 补充单测案例
+
+### Bug Fix
+- cache和queue包在获取对象时读锁枷锁未配对解锁
+
+## v0.1.9(2019-08-01)
+
+### New Features
+- 补充单测案例
+
+### Changes
+- 优化utils包HttpBuildQuery的map嵌套转换实现
+
 ## v0.1.8(2019-07-26)
 
 ### New Features
@@ -17,7 +33,7 @@
 ## v0.1.6(2019-07-24)
 
 ### Bug Fix
-- 修复utils包http_query_build的对值非字符串的处理bug
+- 修复utils包HttpBuildQuery的对值非字符串的处理bug
 
 ## v0.1.5(2019-07-23)
 

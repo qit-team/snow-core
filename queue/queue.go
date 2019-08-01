@@ -34,6 +34,7 @@ func Register(driverType string, driver Instance) {
 func GetQueue(diName string, driverType string) (q Queue) {
 	mu.RLock()
 	instanceFunc, ok := drivers[driverType]
+	mu.RUnlock()
 	if !ok {
 		panic(fmt.Sprintf("queue.GetQueue unknown driver %s", driverType))
 	}

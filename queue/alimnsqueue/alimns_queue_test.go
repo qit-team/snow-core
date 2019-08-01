@@ -8,20 +8,28 @@ import (
 	"context"
 	"github.com/qit-team/snow-core/alimns"
 	"github.com/qit-team/snow-core/utils"
+	"io/ioutil"
+	"strings"
 )
 
 var q queue.Queue
 
 func init() {
-	//需要自己填配置
-	conf := config.MnsConfig{
-		Url:             "http://1922922333567393.mns.cn-hangzhou.aliyuncs.com",
-		AccessKeyId:     "LTAI5T9WsSrN3uhO",
-		AccessKeySecret: "J0nDo3Kpli2FWD5KzwekqV6ozfzvYI",
+	//需要自己在文件填好配置
+	bs, err := ioutil.ReadFile("../../.env.mns")
+	conf := config.MnsConfig{}
+	if err == nil {
+		str := string(bs)
+		arr := strings.Split(str, "\n")
+		if len(arr) >= 3 {
+			conf.Url = arr[0]
+			conf.AccessKeyId = arr[1]
+			conf.AccessKeySecret = arr[2]
+		}
 	}
 
 	//注册alimns类
-	err := alimns.Pr.Register("ali_mns", conf)
+	err = alimns.Pr.Register("ali_mns", conf)
 	if err != nil {
 		fmt.Println(err)
 	}

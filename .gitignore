@@ -1,2 +1,6 @@
 /.idea
 /vendor
+/.env*
+/*.log
+/coverage.data
+coverage.txt
