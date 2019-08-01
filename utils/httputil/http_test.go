@@ -4,7 +4,6 @@ import (
 	"time"
 	"testing"
 	"context"
-	"fmt"
 	"encoding/json"
 )
 
@@ -40,14 +39,15 @@ func TestDoGet(t *testing.T) {
 	response, err := client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	result, err := DealResponse(response)
-	fmt.Println(string(result))
 
 	resp := new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("get result is not ok")
+		return
 	}
 }
 
@@ -59,14 +59,17 @@ func TestPost(t *testing.T) {
 	response, err := client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	result, err := DealResponse(response)
 	resp := new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("post result is not ok")
+		return
 	} else if resp.Data["type"] != ContentTypeForm {
 		t.Error("post content-type is not equal " + ContentTypeForm)
+		return
 	}
 
 	//参数为空map
@@ -74,12 +77,14 @@ func TestPost(t *testing.T) {
 	response, err = client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	result, err = DealResponse(response)
 	resp = new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("post result is not ok")
+		return
 	}
 
 	//参数非空map
@@ -90,12 +95,14 @@ func TestPost(t *testing.T) {
 	response, err = client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	result, err = DealResponse(response)
 	resp = new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("post result is not ok")
+		return
 	}
 }
 
@@ -107,14 +114,17 @@ func TestPostJsonData(t *testing.T) {
 	response, err := client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	result, err := DealResponse(response)
 	resp := new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("postJsonData result is not ok")
+		return
 	} else if resp.Data["type"] != ContentTypeJSON {
 		t.Error("postJsonData content-type is not equal " + ContentTypeJSON)
+		return
 	}
 
 	//参数为空map
@@ -122,12 +132,14 @@ func TestPostJsonData(t *testing.T) {
 	response, err = client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	result, err = DealResponse(response)
 	resp = new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("postJsonData result is not ok")
+		return
 	}
 
 	//参数非空map
@@ -138,11 +150,13 @@ func TestPostJsonData(t *testing.T) {
 	response, err = client.Do(context.TODO(), req)
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	resp = new(responseData)
 	json.Unmarshal(result, resp)
 	if resp.Code != 200 {
 		t.Error("postJsonData result is not ok")
+		return
 	}
 }
 
@@ -151,15 +165,18 @@ func TestStringListToMap(t *testing.T) {
 	_, ok := m["key"]
 	if ok {
 		t.Error("not right filter")
+		return
 	}
 
 	val, ok := m["hts"]
 	if val != "11" {
 		t.Error("not right trim")
+		return
 	}
 
 	val, ok = m["v"]
 	if val != "1:2" {
 		t.Error("not right split")
+		return
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"fmt"
 	//go test时需要开启
-	//_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var engineGroup *xorm.EngineGroup

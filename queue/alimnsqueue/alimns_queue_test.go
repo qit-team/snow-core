@@ -15,9 +15,9 @@ var q queue.Queue
 func init() {
 	//需要自己填配置
 	conf := config.MnsConfig{
-		Url:             "",
-		AccessKeyId:     "",
-		AccessKeySecret: "",
+		Url:             "http://1922922333567393.mns.cn-hangzhou.aliyuncs.com",
+		AccessKeyId:     "LTAI5T9WsSrN3uhO",
+		AccessKeySecret: "J0nDo3Kpli2FWD5KzwekqV6ozfzvYI",
 	}
 
 	//注册alimns类

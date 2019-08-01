@@ -31,6 +31,7 @@ func init() {
 }
 
 func TestGetSetDelete(t *testing.T) {
+	c := cache.GetCache("redis", cache.DriverTypeRedis)
 	ctx := context.TODO()
 	key := "test-cache"
 	value := "111"

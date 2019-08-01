@@ -22,8 +22,6 @@ func MapStrInterface2MapStrStr(input map[string]interface{}) (output map[string]
 //interface转换为字符串
 func Interface2Str(v interface{}) string {
 	switch v.(type) {
-	case float64, float32:
-		return fmt.Sprintf("%f", v)
 	case []rune:
 		return string(v.([]rune))
 	default:

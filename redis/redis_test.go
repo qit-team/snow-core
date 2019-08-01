@@ -1,32 +1,37 @@
 package redis
 
 import (
-	"fmt"
 	"testing"
 	"reflect"
 	"strconv"
-	redis_pool "github.com/hetiansu5/go-redis-pool"
 	"github.com/qit-team/snow-core/config"
+	"time"
 )
 
-var client *redis_pool.ReplicaPool
+var conf config.RedisConfig
 
 func init() {
-	conf := config.RedisConfig{
+	conf = config.RedisConfig{
 		Master: config.RedisBaseConfig{
 			Host: "127.0.0.1",
 			Port: 6379,
 		},
 	}
-
-	var err error
-	client, err = NewRedisClient(conf)
-	if err != nil {
-		fmt.Println(err)
-	}
 }
 
 func TestGetSet(t *testing.T) {
+	_, err := NewRedisClient(config.RedisConfig{})
+	if err == nil {
+		t.Error("redis config donot check")
+		return
+	}
+
+	client, err := NewRedisClient(conf)
+	if err != nil {
+		t.Error("client init failed")
+		return
+	}
+
 	value := 11
 	res, _ := client.Set("hts", value)
 	t.Log(res, reflect.TypeOf(res))
@@ -42,6 +47,34 @@ func TestGetSet(t *testing.T) {
 		return
 	} else if res1 != strconv.Itoa(value) {
 		t.Error("not same")
+		return
+	}
+}
+
+func Test_genRedisConfig(t *testing.T) {
+	conf := config.RedisBaseConfig{
+		Host: "127.0.0.1",
+		Port: 6379,
+	}
+	newConf := genRedisConfig(conf)
+	if newConf.Host != conf.Host || newConf.Port != conf.Port || newConf.DB != conf.DB {
+		t.Error("genRedisConfig failed")
+		return
+	}
+}
+
+func Test_genOptions(t *testing.T) {
+	conf := config.RedisOptionConfig{
+		MaxConns:    64,
+		Wait:        true,
+		IdleTimeout: 3,
+	}
+	newConf := genOptions(conf)
+	if newConf.MaxIdle != 0 || newConf.Wait != conf.Wait || newConf.MaxActive != conf.MaxConns {
+		t.Error("genOptions failed")
+		return
+	} else if newConf.IdleTimeout != 3*time.Second || newConf.ConnectTimeout != 0*time.Second {
+		t.Error("genOptions failed")
 		return
 	}
 }
