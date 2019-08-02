@@ -14,11 +14,6 @@ import (
  * @wiki https://github.com/fvbock/endless#signals
  */
 func runEngine(engine *gin.Engine, addr string, pidPath string) error {
-	//设置gin调试模式
-	if !GetDebug() {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	server := endless.NewServer(addr, engine)
 	server.BeforeBegin = func(add string) {
 		pid := syscall.Getpid()
@@ -33,8 +28,12 @@ func runEngine(engine *gin.Engine, addr string, pidPath string) error {
 
 // Start proxy with config file
 func StartHttp(pidFile string, apiConf config.ApiConfig, registerRoute func(*gin.Engine)) error {
+	//设置gin调试模式
+	if !GetDebug() {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	//配置路由引擎
-	engine := gin.Default()
+	engine := gin.New()
 	registerRoute(engine)
 	addr := apiConf.Host + ":" + strconv.Itoa(apiConf.Port)
 	runEngine(engine, addr, pidFile)
