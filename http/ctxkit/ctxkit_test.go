@@ -3,6 +3,7 @@ package ctxkit
 import (
 	"testing"
 	"github.com/gin-gonic/gin"
+	"fmt"
 )
 
 var c *gin.Context
@@ -25,6 +26,11 @@ func TestGetTraceId(t *testing.T) {
 	v := "2"
 	SetTraceId(c, v)
 	v1 := GetTraceId(c)
+	fmt.Println("======traceId", v1)
+	//logger.Info(c, "====testTrace")
+	GenerateTraceId(c)
+	v2 := GetTraceId(c)
+	fmt.Println("======generateTraceId", v2)
 	if v1 != v {
 		t.Error("TraceId miss match")
 		return
