@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"strings"
 	"errors"
-	"sync"
 )
 
 const (
@@ -54,7 +53,7 @@ func GetHost(ctx context.Context) string {
 	return s
 }
 
-var once sync.Once
+//var once sync.Once
 func GenerateTraceId(ctx *gin.Context) (string, error) {
 	randomId := utils.GenUUID()
 	mdTemp := md5.Sum([]byte(randomId))
@@ -64,9 +63,11 @@ func GenerateTraceId(ctx *gin.Context) (string, error) {
     	return "", errors.New("grenerateTraceIdError")
 	}
 	traceId := mdStr[0 : 8] + "-" + mdStr[8 : 12] + "-" + mdStr[12 : 16] + "-" + mdStr[16 : 20] + "-" + mdStr[20 : 32]
-	//加并发控制
-	once.Do(func() {
-		SetTraceId(ctx, traceId)
-	})
+	SetTraceId(ctx, traceId)
+
+	////加并发控制
+	//once.Do(func() {
+	//	SetTraceId(ctx, traceId)
+	//})
 	return traceId, nil
 }
