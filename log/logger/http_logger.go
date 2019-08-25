@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"github.com/qit-team/snow-core/http/ctxkit"
-	"github.com/gin-gonic/gin"
+	"context"
 )
 
 var (
@@ -40,7 +40,7 @@ func GetHostName() string {
 	return hostname
 }
 
-func formatLog(c *gin.Context, t string, args ...*withField) logrus.Fields {
+func formatLog(c context.Context, t string, args ...*withField) logrus.Fields {
 	data := logrus.Fields{
 		"type": t,
 		"host": GetHostName(),
@@ -84,43 +84,43 @@ func formatLog(c *gin.Context, t string, args ...*withField) logrus.Fields {
 	return data
 }
 
-func Trace(c *gin.Context, logType string, msg ...interface{}) {
+func Trace(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Trace(newMsg...)
 }
 
-func Debug(c *gin.Context, logType string, msg ...interface{}) {
+func Debug(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Debug(newMsg...)
 }
 
-func Info(c *gin.Context, logType string, msg ...interface{}) {
+func Info(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Info(newMsg...)
 }
 
-func Warn(c *gin.Context, logType string, msg ...interface{}) {
+func Warn(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Warn(newMsg...)
 }
 
-func Error(c *gin.Context, logType string, msg ...interface{}) {
+func Error(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Error(newMsg...)
 }
 
-func Fatal(c *gin.Context, logType string, msg ...interface{}) {
+func Fatal(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Fatal(newMsg...)
 }
 
-func Panic(c *gin.Context, logType string, msg ...interface{}) {
+func Panic(c context.Context, logType string, msg ...interface{}) {
 	withFields, newMsg := splitMsg(msg)
 	data := formatLog(c, logType, withFields...)
 	GetLogger().WithFields(data).Panic(newMsg...)
