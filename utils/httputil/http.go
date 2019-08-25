@@ -9,6 +9,7 @@ import (
 	"time"
 	"fmt"
 	"errors"
+	"github.com/qit-team/snow-core/http/ctxkit"
 )
 
 const (
@@ -36,6 +37,8 @@ func NewClient(timeout time.Duration) Client {
 
 //发送请求
 func (c *myClient) Do(ctx context.Context, req *http.Request) (resp *http.Response, err error) {
+	//将ctx中的traceid放在header中向下传递
+	SetTraceIdInHeader(ctx, req)
 	req = req.WithContext(ctx)
 	resp, err = c.cli.Do(req)
 	httpCode := http.StatusOK
@@ -56,6 +59,12 @@ func (c *myClient) Do(ctx context.Context, req *http.Request) (resp *http.Respon
 		return
 	}
 	return
+}
+func SetTraceIdInHeader(ctx context.Context, req *http.Request) {
+	traceId := ctxkit.GetTraceId(ctx)
+	if len(traceId) > 0 {
+		req.Header.Set("X-TRACE-ID", traceId)
+	}
 }
 
 /**

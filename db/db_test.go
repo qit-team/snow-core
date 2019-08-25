@@ -33,7 +33,7 @@ func init() {
 		Host:     "127.0.0.1",
 		Port:     3306,
 		User:     "root",
-		Password: "123456",
+		Password: "Qudian_123",
 		DBName:   "test",
 	}
 	dbConf := config.DbConfig{
