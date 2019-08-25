@@ -29,7 +29,7 @@ type provider struct {
 
 /**
  * @param string 依赖注入别名 必选
- * @param config.LogConfig 配置 必选
+ * @param config.RedisConfig 配置 必选
  * @param bool 是否启用懒加载 可选
  */
 func (p *provider) Register(args ...interface{}) (err error) {
