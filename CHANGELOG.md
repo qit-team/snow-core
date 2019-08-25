@@ -1,3 +1,11 @@
+## v0.1.11(2019-08-25)
+
+### New Features
+- 日志增加traceId
+- middleware组件和httputil组件增加内容串联traceId
+- ctxkit包优化，方便扩展
+
+
 ## v0.1.10(2019-08-02)
 
 ### New Features
