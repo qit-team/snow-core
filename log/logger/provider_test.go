@@ -55,19 +55,19 @@ func TestProvider(t *testing.T) {
 	Error(contextTest, "========testTraceId:levelError=====")
 	Warn(contextTest, "========testTraceId:levelWarn=====")
 	Debug(contextTest, "========testTraceId:levelDebug=====")
+	Trace(contextTest, "========testTraceId:levelTrace=====")
+	//Fatal(contextTest, "========testTraceId:levelFatal=====")
+
 
 	Info(nil, "================")
 
-	//test traceId
-	//traceId1, err := ctxkit.GenerateTraceId(contextTest1)
-	//if err != nil {
-	//	t.Error("generateTraceIdError", err, traceId1)
-	//}
-	//
+
 	Info(contextTest1, "========testTraceId111:levelInfo=====")
 	Error(contextTest1, "========testTraceId111:levelError=====")
 	Warn(contextTest1, "========testTraceId111:levelWarn=====")
 	Debug(contextTest1, "========testTraceId111:levelDebug=====")
+	// 调用panic会导致go test fail
+	//Panic(contextTest1, "========testTraceId111:levelPanic=====")
 
 	arr := Pr.Provides()
 	if !(len(arr) == 1 && arr[0] == "logger") {

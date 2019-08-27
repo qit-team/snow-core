@@ -21,6 +21,7 @@ type Banner struct {
 	ImageUrl string `xorm:"'img_url'"`
 }
 
+
 /**
  * 表名规则
  */
