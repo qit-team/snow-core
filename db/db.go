@@ -5,12 +5,12 @@ import (
 	//_ "github.com/lib/pq" //postgres
 	//_ "github.com/mattn/go-sqlite3" //sqlite3
 	//_ "github.com/denisenkom/go-mssqldb" //mssql
-	"github.com/qit-team/snow-core/config"
-	"fmt"
-	"time"
-	"github.com/go-xorm/xorm"
-	"xorm.io/core"
 	"errors"
+	"fmt"
+	"github.com/go-xorm/xorm"
+	"github.com/qit-team/snow-core/config"
+	"time"
+	"xorm.io/core"
 )
 
 const (
@@ -45,7 +45,7 @@ func newConn(driver string, base config.DbBaseConfig, option config.DbOptionConf
 	if err != nil {
 		return
 	}
-	
+
 	//设置表名和字段的映射规则：驼峰转下划线
 	db.SetMapper(core.SnakeMapper{})
 

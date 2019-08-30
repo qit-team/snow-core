@@ -1,14 +1,14 @@
 package logger
 
 import (
+	"errors"
+	"fmt"
 	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/helper"
 	"github.com/qit-team/snow-core/kernel/container"
 	"github.com/sirupsen/logrus"
-	"sync"
-	"fmt"
-	"github.com/qit-team/snow-core/helper"
-	"errors"
 	"os"
+	"sync"
 )
 
 const SingletonMain = "logger"
@@ -22,8 +22,8 @@ func init() {
 
 type provider struct {
 	mu sync.RWMutex
-	mp map[string]interface{}//配置
-	dn string                      //default name
+	mp map[string]interface{} //配置
+	dn string                 //default name
 }
 
 /**

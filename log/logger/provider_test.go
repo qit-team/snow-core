@@ -1,14 +1,15 @@
 package logger
 
 import (
-	"testing"
-	"github.com/qit-team/snow-core/config"
-	"github.com/gin-gonic/gin"
-	"github.com/qit-team/snow-core/http/ctxkit"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/http/ctxkit"
+	"testing"
 )
 
 var contextTest, contextTest1 *gin.Context
+
 func init() {
 	contextTest = &gin.Context{}
 	contextTest1 = &gin.Context{}
@@ -58,9 +59,7 @@ func TestProvider(t *testing.T) {
 	Trace(contextTest, "========testTraceId:levelTrace=====")
 	//Fatal(contextTest, "========testTraceId:levelFatal=====")
 
-
 	Info(nil, "================")
-
 
 	Info(contextTest1, "========testTraceId111:levelInfo=====")
 	Error(contextTest1, "========testTraceId111:levelError=====")
@@ -87,7 +86,6 @@ func TestProvider(t *testing.T) {
 		return
 	}
 
-
 	c := GetLogger()
 	if c == nil {
 		t.Error("client is equal nil")
@@ -99,8 +97,6 @@ func TestProvider(t *testing.T) {
 		t.Error("client is equal nil")
 		return
 	}
-
-
 
 	defer func() {
 		if e := recover(); e != "logger di_name:logger2 not exist" {

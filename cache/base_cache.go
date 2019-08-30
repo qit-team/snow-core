@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"github.com/qit-team/snow-core/utils"
 	"context"
 	"github.com/qit-team/snow-core/redis"
+	"github.com/qit-team/snow-core/utils"
 )
 
 const (

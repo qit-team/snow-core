@@ -1,11 +1,11 @@
 package cache
 
 import (
-	"testing"
 	"context"
-	"github.com/qit-team/snow-core/redis"
-	"github.com/qit-team/snow-core/config"
 	"fmt"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/redis"
+	"testing"
 )
 
 var m *BaseCache
@@ -116,51 +116,85 @@ func TestBaseCache_getTTL(t *testing.T) {
 	}
 }
 
-//func TestBaseCache_Get_IsExist_Set(t *testing.T) {
-//	key := "test-" + fmt.Sprint(utils.GetCurrentTime())
-//	s, err := m.Get(ctx, key)
-//	if err != nil {
-//		t.Errorf("Get %s err:%s", key, err.Error())
-//		return
-//	} else if s != "" {
-//		t.Errorf("Get %s is not empty", key)
-//		return
-//	}
-//
-//	ok, err := m.IsExist(ctx, key)
-//	if err != nil {
-//		t.Errorf("IsExist %s err:%s", key, err.Error())
-//		return
-//	} else if ok {
-//		t.Errorf("IsExist %s is not equal false", key)
-//		return
-//	}
-//
-//	value := "1"
-//	ok, err = m.Set(ctx, key, value, 1)
-//	if err != nil {
-//		t.Errorf("Set %s err:%s", key, err.Error())
-//		return
-//	} else if !ok {
-//		t.Errorf("Set %s is not ok", key)
-//		return
-//	}
-//
-//	s, _ = m.Get(ctx, key)
-//	if s != value {
-//		t.Errorf("Get %s value(%s) is not equal %s", key, s, value)
-//		return
-//	}
-//
-//	time.Sleep(time.Second)
-//
-//	s, _ = m.Get(ctx, key)
-//	if s != "" {
-//		t.Errorf("Get %s is not empty", key)
-//		return
-//	}
-//}
-//
+func TestBaseCache_KeyRelated(t *testing.T) {
+	m := new(BaseCache)
+	key := "snow-test"
+	redisKey := m.key(key)
+
+	if len(redisKey) < 9 {
+		t.Error("get redis key error")
+		return
+	}
+
+	redisKeyList := m.keys("test-key-A", "test-key-B")
+
+	for k, v := range redisKeyList {
+		if len(v) < 10 {
+			t.Error("get redis key error")
+			return
+		}
+		fmt.Println("get redis key list:", k, v)
+	}
+
+	tempKey := m.removePrefix(redisKey)
+	if len(tempKey) < 9 {
+		t.Error("remove key error")
+		return
+	}
+}
+
+/*
+func TestBaseCache_Get_IsExist_Set(t *testing.T) {
+	m := new(BaseCache)
+	key := "test-snow"
+	m.Get(ctx, key)
+
+	key := "test-" + fmt.Sprint(utils.GetCurrentTime())
+	test get
+	s, err := m.Get(ctx, key)
+	if err != nil {
+		t.Errorf("Get %s err:%s", key, err.Error())
+		return
+	} else if s != "" {
+		t.Errorf("Get %s is not empty", key)
+		return
+	}
+
+	ok, err := m.IsExist(ctx, key)
+	if err != nil {
+		t.Errorf("IsExist %s err:%s", key, err.Error())
+		return
+	} else if ok {
+		t.Errorf("IsExist %s is not equal false", key)
+		return
+	}
+
+	value := "1"
+	ok, err = m.Set(ctx, key, value, 1)
+	if err != nil {
+		t.Errorf("Set %s err:%s", key, err.Error())
+		return
+	} else if !ok {
+		t.Errorf("Set %s is not ok", key)
+		return
+	}
+
+	s, _ = m.Get(ctx, key)
+	if s != value {
+		t.Errorf("Get %s value(%s) is not equal %s", key, s, value)
+		return
+	}
+
+	time.Sleep(time.Second)
+
+	s, _ = m.Get(ctx, key)
+	if s != "" {
+		t.Errorf("Get %s is not empty", key)
+		return
+	}
+}
+*/
+
 //func TestBaseCache_Delete(t *testing.T) {
 //	key := "test1-" + fmt.Sprint(utils.GetCurrentTime())
 //	value := "1"

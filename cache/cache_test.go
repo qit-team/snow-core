@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"github.com/qit-team/snow-core/redis"
-	"github.com/qit-team/snow-core/config"
 	"fmt"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/redis"
 	"testing"
 )
 
@@ -20,8 +20,13 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	//Register("redis", getRedisCache)
 	Register("mock", getMockCache)
+}
+
+func getRedisCache(diName string) Cache {
+	fmt.Println("99999999999999999999999", diName)
+	return nil
 }
 
 func getMockCache(diName string) Cache {

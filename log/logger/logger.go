@@ -1,9 +1,9 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
-	"fmt"
 )
 
 //app.log_handler为file时，日志格式为:[time(ISO8601)]  [host]  [type(service.module.function)]  [req_id]  [server_ip]  [client_ip]  [message(json:code,message,file,line,trace,biz_data)]

@@ -1,13 +1,13 @@
 package db
 
 import (
-	"github.com/qit-team/snow-core/kernel/container"
-	"github.com/qit-team/snow-core/config"
-	"github.com/go-xorm/xorm"
-	"fmt"
-	"github.com/qit-team/snow-core/helper"
-	"sync"
 	"errors"
+	"fmt"
+	"github.com/go-xorm/xorm"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/helper"
+	"github.com/qit-team/snow-core/kernel/container"
+	"sync"
 )
 
 const (

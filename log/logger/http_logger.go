@@ -1,10 +1,10 @@
 package logger
 
 import (
+	"context"
+	"github.com/qit-team/snow-core/http/ctxkit"
 	"github.com/sirupsen/logrus"
 	"os"
-	"github.com/qit-team/snow-core/http/ctxkit"
-	"context"
 )
 
 var (

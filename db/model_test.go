@@ -1,9 +1,9 @@
 package db
 
 import (
-	"testing"
-	"github.com/qit-team/snow-core/config"
 	"fmt"
+	"github.com/qit-team/snow-core/config"
+	"testing"
 	//go test时需要开启
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -17,7 +17,7 @@ func init() {
 		Host:     "127.0.0.1",
 		Port:     3306,
 		User:     "root",
-		Password: "Qudian_123",
+		Password: "Snow_123",
 		DBName:   "test",
 	}
 	dbConf := config.DbConfig{
@@ -48,7 +48,7 @@ func TestGetOne(t *testing.T) {
 func TestGetMulti(t *testing.T) {
 	model := new(bannerModel)
 	ret := make([]*Banner, 0)
-	var idList = []interface{} {1, 2}
+	var idList = []interface{}{1, 2}
 	err := model.GetMulti(idList, &ret)
 	if err != nil {
 		t.Errorf("getMulti error: %v", err)
@@ -64,35 +64,38 @@ func TestGetMulti(t *testing.T) {
 	fmt.Println("getMulti.CheckExceptionBranch:", err)
 }
 
-func TestInsert(t *testing.T)  {
+func TestInsert(t *testing.T) {
+
 	model := new(bannerModel)
 	banner := new(Banner)
 	banner.Id = 4
-    banner.ImageUrl = "img666"
-    banner.Pid = 66666
-    banner.Title = "test insert"
+	banner.ImageUrl = "img666"
+	banner.Pid = 66666
+	banner.Title = "test insert"
 
-    _, err := model.Insert(banner)
+	_, err := model.Insert(banner)
 	if err != nil {
 		t.Errorf("Insert error: %v", err)
 		return
 	}
 	fmt.Println("Insert.Id", banner.Id)
 
-    banner.Id = 5
-    model.Insert(banner)
+	// 插入数据
+	banner.Id = 5
+	model.Insert(banner)
 
-    banner.Id = 6
-    model.Insert(banner)
+	// 插入数据
+	banner.Id = 6
+	model.Insert(banner)
 }
 
-func TestUpdate(t *testing.T)  {
+func TestUpdate(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	banner.ImageUrl = ""
 	banner.Pid = 77777
 	banner.Title = "test update"
-    var id = 7
+	var id = 7
 	_, err := model.Update(id, banner)
 	if err != nil {
 		t.Errorf("Update error: %v", err)
@@ -104,6 +107,7 @@ func TestUpdate(t *testing.T)  {
 	banner.Pid = 888
 	banner.ImageUrl = ""
 	banner.Title = ""
+	// xorm默认对更新字段数据为""的不会执行，需要加mustColumns，这样保证为空的数据字段也能更新，详情搜索xorm手册
 	_, err = model.Update(id, banner, "img_url", "title")
 
 	if err != nil {
@@ -113,11 +117,11 @@ func TestUpdate(t *testing.T)  {
 	fmt.Println("Update mustColumns.success")
 }
 
-func TestDelete(t *testing.T)  {
+func TestDelete(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	id := 4
-	ret ,err := model.Delete(id, banner)
+	ret, err := model.Delete(id, banner)
 
 	if err != nil {
 		t.Errorf("Delete error: %v", err)
@@ -126,11 +130,12 @@ func TestDelete(t *testing.T)  {
 	fmt.Println("Delete.ret", ret)
 }
 
-func TestDeleteMulti(t *testing.T)  {
+func TestDeleteMulti(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	var id = []interface{}{5, 6}
-	ret ,err := model.DeleteMulti(id, banner)
+	// 批量删除id 为5，6的  数据来源参考TestInsert
+	ret, err := model.DeleteMulti(id, banner)
 
 	if err != nil {
 		t.Errorf("DeleteMulti error: %v", err)
@@ -140,7 +145,7 @@ func TestDeleteMulti(t *testing.T)  {
 
 	// 测试参数为空的异常分支
 	var idErr []interface{}
-	_ ,err = model.DeleteMulti(idErr, banner)
+	_, err = model.DeleteMulti(idErr, banner)
 	fmt.Println("DeleteMulti.CheckExceptionBranch.ret", err)
 }
 
@@ -173,5 +178,3 @@ func TestGetList(t *testing.T) {
 		fmt.Println("GetlistLimitAndOrderBranch.ret", v)
 	}
 }
-
-
