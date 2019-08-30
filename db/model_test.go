@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/qit-team/snow-core/config"
 	"testing"
+
 	//go test时需要开启
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -84,7 +85,6 @@ func TestInsert(t *testing.T) {
 	banner.Id = 5
 	model.Insert(banner)
 
-	// 插入数据
 	banner.Id = 6
 	model.Insert(banner)
 }
