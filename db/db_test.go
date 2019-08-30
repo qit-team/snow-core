@@ -1,10 +1,12 @@
 package db
 
 import (
-	"testing"
-	"github.com/qit-team/snow-core/config"
-	"github.com/go-xorm/xorm"
 	"fmt"
+	"testing"
+
+	"github.com/go-xorm/xorm"
+	"github.com/qit-team/snow-core/config"
+
 	//go test时需要开启
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -15,12 +17,11 @@ var engineGroup *xorm.EngineGroup
  * Banner实体
  */
 type Banner struct {
-	Id       int64  `xorm:"pk autoincr"`
+	Id       int64 `xorm:"pk autoincr"`
 	Pid      int
 	Title    string
 	ImageUrl string `xorm:"'img_url'"`
 }
-
 
 /**
  * 表名规则

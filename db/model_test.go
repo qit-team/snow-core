@@ -1,9 +1,11 @@
 package db
 
 import (
-	"testing"
-	"github.com/qit-team/snow-core/config"
 	"fmt"
+	"testing"
+
+	"github.com/qit-team/snow-core/config"
+
 	//go test时需要开启
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -48,7 +50,7 @@ func TestGetOne(t *testing.T) {
 func TestGetMulti(t *testing.T) {
 	model := new(bannerModel)
 	ret := make([]*Banner, 0)
-	var idList = []interface{} {1, 2}
+	var idList = []interface{}{1, 2}
 	err := model.GetMulti(idList, &ret)
 	if err != nil {
 		t.Errorf("getMulti error: %v", err)
@@ -64,35 +66,35 @@ func TestGetMulti(t *testing.T) {
 	fmt.Println("getMulti.CheckExceptionBranch:", err)
 }
 
-func TestInsert(t *testing.T)  {
+func TestInsert(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	banner.Id = 4
-    banner.ImageUrl = "img666"
-    banner.Pid = 66666
-    banner.Title = "test insert"
+	banner.ImageUrl = "img666"
+	banner.Pid = 66666
+	banner.Title = "test insert"
 
-    _, err := model.Insert(banner)
+	_, err := model.Insert(banner)
 	if err != nil {
 		t.Errorf("Insert error: %v", err)
 		return
 	}
 	fmt.Println("Insert.Id", banner.Id)
 
-    banner.Id = 5
-    model.Insert(banner)
+	banner.Id = 5
+	model.Insert(banner)
 
-    banner.Id = 6
-    model.Insert(banner)
+	banner.Id = 6
+	model.Insert(banner)
 }
 
-func TestUpdate(t *testing.T)  {
+func TestUpdate(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	banner.ImageUrl = ""
 	banner.Pid = 77777
 	banner.Title = "test update"
-    var id = 7
+	var id = 7
 	_, err := model.Update(id, banner)
 	if err != nil {
 		t.Errorf("Update error: %v", err)
@@ -113,11 +115,11 @@ func TestUpdate(t *testing.T)  {
 	fmt.Println("Update mustColumns.success")
 }
 
-func TestDelete(t *testing.T)  {
+func TestDelete(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	id := 4
-	ret ,err := model.Delete(id, banner)
+	ret, err := model.Delete(id, banner)
 
 	if err != nil {
 		t.Errorf("Delete error: %v", err)
@@ -126,11 +128,11 @@ func TestDelete(t *testing.T)  {
 	fmt.Println("Delete.ret", ret)
 }
 
-func TestDeleteMulti(t *testing.T)  {
+func TestDeleteMulti(t *testing.T) {
 	model := new(bannerModel)
 	banner := new(Banner)
 	var id = []interface{}{5, 6}
-	ret ,err := model.DeleteMulti(id, banner)
+	ret, err := model.DeleteMulti(id, banner)
 
 	if err != nil {
 		t.Errorf("DeleteMulti error: %v", err)
@@ -140,7 +142,7 @@ func TestDeleteMulti(t *testing.T)  {
 
 	// 测试参数为空的异常分支
 	var idErr []interface{}
-	_ ,err = model.DeleteMulti(idErr, banner)
+	_, err = model.DeleteMulti(idErr, banner)
 	fmt.Println("DeleteMulti.CheckExceptionBranch.ret", err)
 }
 
@@ -173,5 +175,3 @@ func TestGetList(t *testing.T) {
 		fmt.Println("GetlistLimitAndOrderBranch.ret", v)
 	}
 }
-
-
