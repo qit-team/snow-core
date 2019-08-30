@@ -81,7 +81,7 @@ func TestInsert(t *testing.T) {
 	}
 	fmt.Println("Insert.Id", banner.Id)
 
-	// 插入数据
+	// 插入数据 为了测试批量删除功能，见函数：TestDeleteMulti
 	banner.Id = 5
 	model.Insert(banner)
 
@@ -96,6 +96,7 @@ func TestUpdate(t *testing.T) {
 	banner.Pid = 77777
 	banner.Title = "test update"
 	var id = 7
+	// 注意：直接用默认的update对上面的ImageUrl字段不会更新
 	_, err := model.Update(id, banner)
 	if err != nil {
 		t.Errorf("Update error: %v", err)
@@ -164,7 +165,7 @@ func TestGetList(t *testing.T) {
 		fmt.Println("GetList.ret", v)
 	}
 
-	// 测试其他if分支
+	// 测试其他if分支 覆盖getList所有代码
 	banner1 := make([]*Banner, 0)
 
 	sql = "status >= ? and status <= ?"

@@ -42,13 +42,14 @@ func TestProvider(t *testing.T) {
 		return
 	}
 
-	//test generate trace id
+	// test generate trace id
 	traceId, err := ctxkit.GenerateTraceId(contextTest)
 
 	if err != nil {
 		t.Error("generateTraceIdError", err, traceId)
 	}
 
+	// 对context设置traceId
 	ctxkit.SetTraceId(contextTest, traceId)
 	temp := ctxkit.GetTraceId(contextTest)
 	fmt.Println("=======test_temp:", temp)
@@ -61,6 +62,7 @@ func TestProvider(t *testing.T) {
 
 	Info(nil, "================")
 
+	// 新的context，确保第一次记录log，会在context中种下traceId
 	Info(contextTest1, "========testTraceId111:levelInfo=====")
 	Error(contextTest1, "========testTraceId111:levelError=====")
 	Warn(contextTest1, "========testTraceId111:levelWarn=====")
