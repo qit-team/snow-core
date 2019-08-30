@@ -61,3 +61,15 @@ func TestGet(t *testing.T) {
 
 	fmt.Println(banner)
 }
+
+func TestProvider_Provides(t *testing.T) {
+	retList := Pr.Provides()
+	if len(retList) == 0 {
+		t.Error("Provides empty")
+		return
+	}
+
+	for k, v := range retList {
+		fmt.Println("Provides list", k, v)
+	}
+}

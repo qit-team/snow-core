@@ -25,7 +25,6 @@ func init() {
 }
 
 func getRedisCache(diName string) Cache {
-	fmt.Println("99999999999999999999999", diName)
 	return nil
 }
 

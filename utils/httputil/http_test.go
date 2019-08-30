@@ -1,12 +1,12 @@
 package httputil
 
 import (
-	"time"
-	"testing"
 	"context"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/qit-team/snow-core/http/ctxkit"
+	"testing"
+	"time"
 )
 
 type responseData struct {
@@ -17,7 +17,6 @@ type responseData struct {
 
 var client Client
 var c *gin.Context
-
 
 func init() {
 	client = NewClient(time.Second * 5)
@@ -37,7 +36,7 @@ func init() {
     ]
   ];
   echo json_encode($data);
- */
+*/
 func TestDoGet(t *testing.T) {
 	url := "http://weixin.hetiansu.com/test.php"
 	req, _ := NewGetRequest(url, nil)
