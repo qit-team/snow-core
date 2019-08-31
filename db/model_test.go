@@ -179,3 +179,13 @@ func TestGetList(t *testing.T) {
 		fmt.Println("GetlistLimitAndOrderBranch.ret", v)
 	}
 }
+
+func TestProvider_Close(t *testing.T) {
+	// 关闭链接，此时再执行sql都无法执行会报 sql: database is closed， 所以在sql执行完之后做close操作
+	err := Pr.Close()
+
+	if err != nil {
+		t.Error("Close Fail")
+		return
+	}
+}

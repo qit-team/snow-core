@@ -29,6 +29,10 @@ func (m *Banner) TableName() string {
 }
 
 func init() {
+	dbInit(true)
+}
+
+func dbInit(lazyBool bool) {
 	m := config.DbBaseConfig{
 		Host:     "127.0.0.1",
 		Port:     3306,
@@ -41,7 +45,7 @@ func init() {
 		Master: m,
 	}
 
-	err := Pr.Register("db", dbConf, true)
+	err := Pr.Register("db", dbConf, lazyBool)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -51,7 +55,8 @@ func init() {
 
 func TestGet(t *testing.T) {
 	banner := new(Banner)
-	engineGroup.ShowSQL(true)
+	// sql是否打印开关
+	//engineGroup.ShowSQL(true)
 	_, err := engineGroup.ID(1).Get(banner)
 
 	if err != nil {
