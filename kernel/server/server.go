@@ -3,12 +3,12 @@ package server
 import (
 	"bufio"
 	"fmt"
+	"github.com/qit-team/snow-core/kernel/close"
 	"os"
 	"os/signal"
 	"strconv"
 	"strings"
 	"syscall"
-	"github.com/qit-team/snow-core/kernel/close"
 )
 
 const (

@@ -54,8 +54,41 @@ func TestPidFile(t *testing.T) {
 	}
 }
 
-// todo
-// github.com/qit-team/snow-core/kernel/server/server.go:68:		WaitStop			0.0%
-// github.com/qit-team/snow-core/kernel/server/server.go:73:		CloseService			0.0%
-// github.com/qit-team/snow-core/kernel/server/server.go:111:		HandleUserCmd			0.0%
-// github.com/qit-team/snow-core/kernel/server/server.go:139:		Stop				0.0%
+func TestStop(t *testing.T) {
+	go func() {
+		WaitStop()
+	}()
+
+	//time.Sleep(1)
+	go func() {
+		Stop()
+	}()
+}
+
+func TestCloseService(t *testing.T) {
+	CloseService()
+}
+
+func TestHandleUserCmd(t *testing.T) {
+	err := HandleUserCmd("cmd", "../../.env_pid")
+	if err == nil {
+		t.Error("unknown cmd error")
+		return
+	}
+
+	err = HandleUserCmd("stop", "../../.env_pid")
+	// process already finished
+	if err == nil {
+		t.Error("stop cmd error")
+		return
+	}
+
+	err = HandleUserCmd("restart", "../../.env_pid")
+	// process already finished
+	if err == nil {
+		t.Error("restart cmd error")
+		return
+	}
+
+	// todo construct more cases, for exampla the process is running
+}
