@@ -368,3 +368,89 @@ func TestBaseCache_Expire(t *testing.T) {
 		return
 	}
 }
+
+func TestRedisCache_DecrBy(t *testing.T) {
+	m := new(cache.BaseCache)
+	key := "test-snow-decr-and-incr-1-" + fmt.Sprint(utils.GetCurrentTime())
+	value := 10
+	ok, err := m.Set(ctx, key, value)
+	if err != nil {
+		t.Errorf("Set %s err:%s", key, err.Error())
+		return
+	} else if !ok {
+		t.Errorf("Set %s is not ok", key)
+		return
+	}
+
+	ret, err := m.DecrBy(ctx, key, 3)
+	if err != nil {
+		t.Errorf("Decr %s error:%s", key, err.Error())
+	}
+	if ret != 7 {
+		t.Errorf("Decr ret %s is not ok", key)
+	}
+
+	// test value is type of string
+	keyStr := "test-snow-decr-and-incr-2-" + fmt.Sprint(utils.GetCurrentTime())
+	valueStr := "10"
+	ok, err = m.Set(ctx, keyStr, valueStr)
+	if err != nil {
+		t.Errorf("Set %s err:%s", keyStr, err.Error())
+		return
+	} else if !ok {
+		t.Errorf("Set %s is not ok", keyStr)
+		return
+	}
+
+	retStr, err := m.DecrBy(ctx, keyStr, 3)
+	if err != nil {
+		t.Errorf("DecrStr %s error:%s", keyStr, err.Error())
+	}
+
+	if retStr != 7 {
+		t.Errorf("DecrStr ret %s is not ok", keyStr)
+	}
+}
+
+func TestRedisCache_IncrBy(t *testing.T) {
+	m := new(cache.BaseCache)
+	key := "test-snow-decr-and-incr-1-" + fmt.Sprint(utils.GetCurrentTime())
+	value := 10
+	ok, err := m.Set(ctx, key, value)
+	if err != nil {
+		t.Errorf("Set %s err:%s", key, err.Error())
+		return
+	} else if !ok {
+		t.Errorf("Set %s is not ok", key)
+		return
+	}
+
+	ret, err := m.IncrBy(ctx, key, 6)
+	if err != nil {
+		t.Errorf("Incr %s error:%s", key, err.Error())
+	}
+	if ret != 16 {
+		t.Errorf("Incr ret %s is not ok", key)
+	}
+
+	// test value is type of string
+	keyStr := "test-snow-decr-and-incr-2-" + fmt.Sprint(utils.GetCurrentTime())
+	valueStr := "10"
+	ok, err = m.Set(ctx, keyStr, valueStr)
+	if err != nil {
+		t.Errorf("Set %s err:%s", keyStr, err.Error())
+		return
+	} else if !ok {
+		t.Errorf("Set %s is not ok", keyStr)
+		return
+	}
+
+	retStr, err := m.IncrBy(ctx, keyStr, 6)
+	if err != nil {
+		t.Errorf("IncrStr %s error:%s", keyStr, err.Error())
+	}
+
+	if retStr != 16 {
+		t.Errorf("IncrStr ret %s is not ok", keyStr)
+	}
+}

@@ -12,4 +12,6 @@ type Cache interface {
 	DeleteMulti(ctx context.Context, key ...string) (bool, error)
 	Expire(ctx context.Context, key string, ttl ...int) (bool, error)
 	IsExist(ctx context.Context, key string) (bool, error)
+	IncrBy(ctx context.Context, key string, value int64) (int64, error)
+	DecrBy(ctx context.Context, key string, value int64) (int64, error)
 }

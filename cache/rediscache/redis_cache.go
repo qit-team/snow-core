@@ -3,8 +3,8 @@ package rediscache
 import (
 	"context"
 	redis_pool "github.com/hetiansu5/go-redis-pool"
-	"github.com/qit-team/snow-core/redis"
 	"github.com/qit-team/snow-core/cache"
+	"github.com/qit-team/snow-core/redis"
 	"sync"
 )
 
@@ -119,6 +119,22 @@ func convert(keys []string) []interface{} {
 		arr[i] = v
 	}
 	return arr
+}
+
+func (c *RedisCache) IncrBy(ctx context.Context, key string, value int64) (int64, error) {
+	newVal, err := c.client.IncrBy(key, value)
+	if err != nil {
+		return 0, err
+	}
+	return int64(newVal), err
+}
+
+func (c *RedisCache) DecrBy(ctx context.Context, key string, value int64) (int64, error) {
+	newVal, err := c.client.DecrBy(key, value)
+	if err != nil {
+		return 0, err
+	}
+	return int64(newVal), err
 }
 
 func init() {
