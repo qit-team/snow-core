@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+const httpPid = 10001
+
 func TestGetDebug(t *testing.T) {
 	debug := GetDebug()
 	if debug != false {
@@ -38,7 +40,7 @@ func TestSignel(t *testing.T) {
 }
 
 func TestPidFile(t *testing.T) {
-	err := WritePidFile("../../.env_pid", 10001)
+	err := WritePidFile("../../.env_pid", httpPid)
 	if err != nil {
 		t.Error("WritePidFile error")
 		return
@@ -90,5 +92,5 @@ func TestHandleUserCmd(t *testing.T) {
 		return
 	}
 
-	// todo construct more cases, for exampla the process is running
+	// todo construct more cases, for example the process is running
 }

@@ -1,12 +1,12 @@
 package redisqueue
 
 import (
-	"testing"
 	"context"
-	"github.com/qit-team/snow-core/config"
 	"fmt"
-	"github.com/qit-team/snow-core/redis"
+	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/queue"
+	"github.com/qit-team/snow-core/redis"
+	"testing"
 )
 
 var q queue.Queue

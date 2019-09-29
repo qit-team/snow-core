@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"sync"
 	"fmt"
+	"sync"
 )
 
 const (

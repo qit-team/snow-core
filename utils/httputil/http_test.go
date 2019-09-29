@@ -38,7 +38,7 @@ func init() {
   echo json_encode($data);
 */
 func TestDoGet(t *testing.T) {
-	url := "http://weixin.hetiansu.com/test.php"
+	url := "http://localhost:8080/hello"
 	req, _ := NewGetRequest(url, nil)
 	ctxkit.GenerateTraceId(c)
 	response, err := client.Do(c, req)
@@ -57,9 +57,8 @@ func TestDoGet(t *testing.T) {
 }
 
 func TestPost(t *testing.T) {
-	url := "http://weixin.hetiansu.com/test.php"
-
-	//参数为nil
+	url := "http://localhost:8080/testPost"
+	// 参数为空
 	req, err := NewFormPostRequest(url, nil)
 	response, err := client.Do(context.TODO(), req)
 	if err != nil {
@@ -69,6 +68,7 @@ func TestPost(t *testing.T) {
 	result, err := DealResponse(response)
 	resp := new(responseData)
 	json.Unmarshal(result, resp)
+
 	if resp.Code != 200 {
 		t.Error("post result is not ok")
 		return
@@ -112,7 +112,7 @@ func TestPost(t *testing.T) {
 }
 
 func TestPostJsonData(t *testing.T) {
-	url := "http://weixin.hetiansu.com/test.php"
+	url := "http://localhost:8080/test"
 
 	//参数为nil
 	req, err := NewJsonPostRequest(url, nil)
@@ -124,11 +124,8 @@ func TestPostJsonData(t *testing.T) {
 	result, err := DealResponse(response)
 	resp := new(responseData)
 	json.Unmarshal(result, resp)
-	if resp.Code != 200 {
+	if resp.Code != 400 {
 		t.Error("postJsonData result is not ok")
-		return
-	} else if resp.Data["type"] != ContentTypeJSON {
-		t.Error("postJsonData content-type is not equal " + ContentTypeJSON)
 		return
 	}
 
