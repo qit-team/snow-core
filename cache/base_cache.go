@@ -141,6 +141,16 @@ func (m *BaseCache) IsExist(ctx context.Context, key string) (bool, error) {
 	return m.GetCache().IsExist(ctx, key)
 }
 
+func (m *BaseCache) IncrBy(ctx context.Context, key string, value int64) (int64, error) {
+	key = m.key(key)
+	return m.GetCache().IncrBy(ctx, key, value)
+}
+
+func (m *BaseCache) DecrBy(ctx context.Context, key string, value int64) (int64, error) {
+	key = m.key(key)
+	return m.GetCache().DecrBy(ctx, key, value)
+}
+
 //获取缓存类
 func (m *BaseCache) GetCache() Cache {
 	//不使用once.Done是因为会有多种cache实例
