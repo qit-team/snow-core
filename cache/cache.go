@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	DriverTypeRedis = "redis"
+	DriverTypeRedis  = "redis"
+	DriverTypeMemory = "memory"
 )
 
 var (
