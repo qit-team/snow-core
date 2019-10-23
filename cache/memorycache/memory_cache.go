@@ -27,6 +27,7 @@ type Item struct {
 
 type MemoryCache struct {
 	items map[string]Item
+	mu sync.RWMutex
 }
 
 func init()  {
@@ -62,9 +63,9 @@ func GetRedisCache(diName string) cache.Cache {
  * 注意事项，如果key值不存在的话，返回的是空字符串，而不是nil
  */
 func (c *MemoryCache) Get(ctx context.Context, key string) (interface{}, error) {
-	mu.RLock()
+	c.mu.RLock()
 	value, ok := c.items[key]
-	mu.RUnlock()
+	c.mu.RUnlock()
 	if !ok {
 		return "", nil
 	}
@@ -76,8 +77,8 @@ func (c *MemoryCache) Get(ctx context.Context, key string) (interface{}, error) 
 
 func (c *MemoryCache) GetMulti(ctx context.Context, keys ...string) (map[string]interface{}, error) {
 	arr := make(map[string]interface{})
-	mu.RLock()
-	defer mu.RUnlock()
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	for _, key := range keys {
 		if value, ok := c.items[key]; ok && inExpire(value.expireAt) {
 			arr[key] = value.data
@@ -97,8 +98,8 @@ func (c *MemoryCache) Set(ctx context.Context, key string, value interface{}, tt
 		data:     value,
 		expireAt: time.Now().Add(time.Duration(t) * time.Second),
 	}
-	mu.Lock()
-	defer mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.items[key] = item
 	return true, nil
 }
@@ -110,8 +111,8 @@ func (c *MemoryCache) SetMulti(ctx context.Context, items map[string]interface{}
 	}
 	expireAt := time.Now().Add(time.Duration(t) * time.Second)
 	var item Item
-	mu.Lock()
-	defer mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	for key, value := range items {
 		item = Item{
 			data:     value,
@@ -123,8 +124,8 @@ func (c *MemoryCache) SetMulti(ctx context.Context, items map[string]interface{}
 }
 
 func (c *MemoryCache) Delete(ctx context.Context, key string) (bool, error) {
-	mu.Lock()
-	defer mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	if _, ok := c.items[key]; ok {
 		delete(c.items, key)
 	}
@@ -132,8 +133,8 @@ func (c *MemoryCache) Delete(ctx context.Context, key string) (bool, error) {
 }
 
 func (c *MemoryCache) DeleteMulti(ctx context.Context, keys ...string) (bool, error) {
-	mu.Lock()
-	defer mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	for _, key := range keys {
 		if _, ok := c.items[key]; ok {
 			delete(c.items, key)
@@ -145,8 +146,8 @@ func (c *MemoryCache) DeleteMulti(ctx context.Context, keys ...string) (bool, er
 func (c *MemoryCache) Expire(ctx context.Context, key string, ttl ...int) (bool, error) {
 	t := cache.GetTTLOrDefault(ttl...)
 	expireAt := time.Now().Add(time.Duration(t))
-	mu.Lock()
-	defer mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	if item, ok := c.items[key]; ok {
 		if inExpire(item.expireAt) {
 			item.expireAt = expireAt
@@ -159,9 +160,9 @@ func (c *MemoryCache) Expire(ctx context.Context, key string, ttl ...int) (bool,
 }
 
 func (c *MemoryCache) IsExist(ctx context.Context, key string) (bool, error) {
-	mu.RLock()
+	c.mu.RLock()
 	value, ok := c.items[key]
-	mu.RUnlock()
+	c.mu.RUnlock()
 	if ok && inExpire(value.expireAt) {
 		return true, nil
 	}
@@ -169,8 +170,8 @@ func (c *MemoryCache) IsExist(ctx context.Context, key string) (bool, error) {
 }
 
 func (c *MemoryCache) IncrBy(ctx context.Context, key string, value int64) (int64, error) {
-	mu.RLock()
-	defer mu.RUnlock()
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	var newValue int64
 	if item, ok := c.items[key]; ok {
 		if val, err := interfaceToInt64(item.data); err == nil {
@@ -192,8 +193,8 @@ func (c *MemoryCache) IncrBy(ctx context.Context, key string, value int64) (int6
 }
 
 func (c *MemoryCache) DecrBy(ctx context.Context, key string, value int64) (int64, error) {
-	mu.RLock()
-	defer mu.RUnlock()
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	var newValue int64
 	if item, ok := c.items[key]; ok {
 		if val, err := interfaceToInt64(item.data); err == nil {
