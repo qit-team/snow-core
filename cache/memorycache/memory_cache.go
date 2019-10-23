@@ -15,8 +15,8 @@ const (
 )
 
 var (
-	mp map[string]cache.Cache
-	mu sync.RWMutex
+	mp               map[string]cache.Cache
+	mu               sync.RWMutex
 	ErrWrongDataType error
 )
 
@@ -27,10 +27,10 @@ type Item struct {
 
 type MemoryCache struct {
 	items map[string]Item
-	mu sync.RWMutex
+	mu    sync.RWMutex
 }
 
-func init()  {
+func init() {
 	ErrWrongDataType = errors.New("wrong data type")
 }
 
@@ -193,26 +193,7 @@ func (c *MemoryCache) IncrBy(ctx context.Context, key string, value int64) (int6
 }
 
 func (c *MemoryCache) DecrBy(ctx context.Context, key string, value int64) (int64, error) {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	var newValue int64
-	if item, ok := c.items[key]; ok {
-		if val, err := interfaceToInt64(item.data); err == nil {
-			newValue = val - value
-			item.data = newValue
-			c.items[key] = item
-		} else {
-			return 0, ErrWrongDataType
-		}
-	} else {
-		newValue = -value
-		item = Item{
-			data:     newValue,
-			expireAt: time.Now().Add(time.Duration(MaxPersistenceTime) * time.Second),
-		}
-		c.items[key] = item
-	}
-	return newValue, nil
+	return c.IncrBy(ctx, key, -value)
 }
 
 func inExpire(u time.Time) bool {
