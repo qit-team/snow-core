@@ -2,20 +2,20 @@ package alimnsqueue
 
 import (
 	"context"
+	"errors"
 	"github.com/aliyun/aliyun-mns-go-sdk"
 	"github.com/qit-team/snow-core/alimns"
-	"strings"
-	"errors"
-	"sync"
 	"github.com/qit-team/snow-core/queue"
+	"strings"
+	"sync"
 )
 
 const (
-	DefaultVisibilityTimeout = int64(30)
+	DefaultVisibilityTimeout = int64(120)
 )
 
 var (
-	mp  map[string]queue.Queue
+	mp map[string]queue.Queue
 	mu sync.RWMutex
 )
 
