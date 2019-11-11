@@ -2,11 +2,11 @@ package redisqueue
 
 import (
 	"context"
-	redis_pool "github.com/hetiansu5/go-redis-pool"
-	"github.com/qit-team/snow-core/redis"
 	"errors"
-	"sync"
+	redis_pool "github.com/hetiansu5/go-redis-pool"
 	"github.com/qit-team/snow-core/queue"
+	"github.com/qit-team/snow-core/redis"
+	"sync"
 )
 
 var (
@@ -57,7 +57,9 @@ func (m *RedisQueue) Enqueue(ctx context.Context, key string, message string, ar
 /**
  * 队列消息出队
  */
-func (m *RedisQueue) Dequeue(ctx context.Context, key string) (message string, token string, err error) {
+func (m *RedisQueue) Dequeue(ctx context.Context, key string) (message string, token string, dequeueCount int64, err error) {
+	// redis 出队次数暂用1 目前不支持统计这个次数
+	dequeueCount = 0
 	message, err = m.client.LPop(key)
 	if err == redis_pool.ErrNil {
 		err = nil

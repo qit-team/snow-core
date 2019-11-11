@@ -43,7 +43,7 @@ func TestEnqueue(t *testing.T) {
 		return
 	}
 
-	message, token, err := q.Dequeue(ctx, topic)
+	message, token, _, err := q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return
@@ -63,7 +63,7 @@ func TestEnqueue(t *testing.T) {
 		return
 	}
 
-	message, _, err = q.Dequeue(ctx, topic)
+	message, _, _, err = q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return
@@ -85,7 +85,7 @@ func TestBatchEnqueue(t *testing.T) {
 
 	fmt.Println("batch enqueue", topic, messages)
 
-	message, _, err := q.Dequeue(ctx, topic)
+	message, _, _, err := q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return
@@ -95,7 +95,7 @@ func TestBatchEnqueue(t *testing.T) {
 		return
 	}
 
-	message, _, err = q.Dequeue(ctx, topic)
+	message, _, _, err = q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return

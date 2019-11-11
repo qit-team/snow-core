@@ -1,15 +1,15 @@
 package alimnsqueue
 
 import (
-	"fmt"
-	"github.com/qit-team/snow-core/queue"
-	"github.com/qit-team/snow-core/config"
-	"testing"
 	"context"
+	"fmt"
 	"github.com/qit-team/snow-core/alimns"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/queue"
 	"github.com/qit-team/snow-core/utils"
 	"io/ioutil"
 	"strings"
+	"testing"
 )
 
 var q queue.Queue
@@ -52,7 +52,8 @@ func TestEnqueue(t *testing.T) {
 		return
 	}
 
-	message, token, err := q.Dequeue(ctx, topic)
+	message, token, dequeueCount, err := q.Dequeue(ctx, topic)
+	fmt.Println("message dequeue num:", dequeueCount)
 	if err != nil {
 		t.Error(err)
 		return
@@ -72,7 +73,7 @@ func TestEnqueue(t *testing.T) {
 		return
 	}
 
-	message, token, err = q.Dequeue(ctx, topic)
+	message, token, dequeueCount, err = q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return
@@ -99,17 +100,18 @@ func TestBatchEnqueue(t *testing.T) {
 
 	fmt.Println("batch enqueue", topic, messages)
 
-	message1, token1, err := q.Dequeue(ctx, topic)
+	message1, token1, dequeueCount, err := q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	message2, token2, err := q.Dequeue(ctx, topic)
+	message2, token2, dequeueCount, err := q.Dequeue(ctx, topic)
 	if err != nil {
 		t.Error(err)
 		return
 	}
+	fmt.Println("TestBatchEnqueue:dequeueCount:", dequeueCount)
 
 	if message1 == messages[0] {
 		if message2 != messages[1] {
