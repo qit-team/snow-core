@@ -1,3 +1,8 @@
+## v0.1.16(2019-11-18)
+
+### New Features
+- 队列queue新增aliyunmq【rocketmq】驱动
+
 ## v0.1.15(2019-11-10)
 
 ### New Features
