@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	DefaultVisibilityTimeout = int64(120)
+	DefaultVisibilityTimeout = int64(60)
 )
 
 var (
