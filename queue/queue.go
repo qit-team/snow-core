@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	DriverTypeRedis  = "redis"
-	DriverTypeAliMns = "ali_mns"
+	DriverTypeRedis    = "redis"
+	DriverTypeAliMns   = "ali_mns"
+	DriverTypeAliyunMq = "aliyun_mq"
 )
 
 var (

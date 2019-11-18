@@ -76,7 +76,7 @@ func (m *MnsQueue) Enqueue(ctx context.Context, key string, message string, args
  * 队列消息出队
  * return 第一个参数是消息 第二个参数是mns的ReceiptHandle命名为token，通过token确定消息是否从队列删除
  */
-func (m *MnsQueue) Dequeue(ctx context.Context, key string) (message string, token string, dequeueCount int64, err error) {
+func (m *MnsQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, token string, dequeueCount int64, err error) {
 	respChan := make(chan ali_mns.MessageReceiveResponse)
 	errChan := make(chan error)
 	//目前只做单次读取，不需要实现常驻进程，这部分由job完成
@@ -143,7 +143,7 @@ func (m *MnsQueue) BatchEnqueue(ctx context.Context, key string, messages []stri
 /**
  * 确认消息接收
  */
-func (m *MnsQueue) AckMsg(ctx context.Context, key string, token string) (bool, error) {
+func (m *MnsQueue) AckMsg(ctx context.Context, key string, token string, args ...interface{}) (bool, error) {
 	queueClient := alimns.GetMnsBasicQueue(m.client, key)
 	if len(token) < 1 {
 		return false, errors.New("token empty")
