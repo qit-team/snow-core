@@ -65,3 +65,9 @@ type ApiConfig struct {
 	Host string
 	Port int
 }
+
+type AliyunMqConfig struct {
+	EndPoint  string
+	AccessKey string
+	SecretKey string
+}

@@ -57,7 +57,7 @@ func (m *RedisQueue) Enqueue(ctx context.Context, key string, message string, ar
 /**
  * 队列消息出队
  */
-func (m *RedisQueue) Dequeue(ctx context.Context, key string) (message string, token string, dequeueCount int64, err error) {
+func (m *RedisQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, token string, dequeueCount int64, err error) {
 	// redis 出队次数暂用1 目前不支持统计这个次数
 	dequeueCount = 0
 	message, err = m.client.LPop(key)
@@ -71,7 +71,7 @@ func (m *RedisQueue) Dequeue(ctx context.Context, key string) (message string, t
 /**
  * 确认消息接收 redis暂时用不到
  */
-func (m *RedisQueue) AckMsg(ctx context.Context, key string, token string) (bool, error) {
+func (m *RedisQueue) AckMsg(ctx context.Context, key string, token string, args ...interface{}) (bool, error) {
 	return true, nil
 }
 
