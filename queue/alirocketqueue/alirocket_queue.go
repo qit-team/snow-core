@@ -111,12 +111,12 @@ func (m *AliyunMq) Dequeue(ctx context.Context, key string, args ...interface{})
 
 			for _, v := range resp.Messages {
 				handles = append(handles, v.ReceiptHandle)
-				fmt.Printf("\tMessageID: %s, PublishTime: %d, MessageTag: %s\n"+
-					"\tConsumedTimes: %d, FirstConsumeTime: %d, NextConsumeTime: %d\n"+
-					"\tBody: %s\n"+
-					"\tProps: %s\n",
-					v.MessageId, v.PublishTime, v.MessageTag, v.ConsumedTimes,
-					v.FirstConsumeTime, v.NextConsumeTime, v.MessageBody, v.Properties)
+				//fmt.Printf("\tMessageID: %s, PublishTime: %d, MessageTag: %s\n"+
+				//	"\tConsumedTimes: %d, FirstConsumeTime: %d, NextConsumeTime: %d\n"+
+				//	"\tBody: %s\n"+
+				//	"\tProps: %s\n",
+				//	v.MessageId, v.PublishTime, v.MessageTag, v.ConsumedTimes,
+				//	v.FirstConsumeTime, v.NextConsumeTime, v.MessageBody, v.Properties)
 				return v.MessageBody, v.ReceiptHandle, v.ConsumedTimes, nil
 			}
 
@@ -127,9 +127,9 @@ func (m *AliyunMq) Dequeue(ctx context.Context, key string, args ...interface{})
 			err = errMsg
 			if strings.Contains(errMsg.(errors.ErrCode).Error(), "MessageNotExist") {
 				err = nil
-				fmt.Println("\nNo new message, continue!")
+				// fmt.Println("\nNo new message, continue!")
 			} else {
-				fmt.Println(errMsg)
+				fmt.Println("aliyunmq get msg error:", errMsg)
 				time.Sleep(time.Duration(3) * time.Second)
 			}
 		}
