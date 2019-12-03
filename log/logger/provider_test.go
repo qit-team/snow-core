@@ -114,3 +114,33 @@ func TestProvider(t *testing.T) {
 	}
 
 }
+
+func TestNewWithField(t *testing.T) {
+	// 测试NewWithField && BatchNewWithField方法
+	conf := config.LogConfig{
+		Handler: "file",
+		Level:   "info",
+		Dir:     "../../",
+	}
+
+	defer func() {
+		if e := recover(); e != nil {
+			t.Error("test NewWithField panic")
+		}
+	}()
+	err := Pr.Register("logger", conf, true)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	Info(nil, "===TestNewWithField", NewWithField("data", "snow"))
+
+	logInfo := map[string]interface{}{
+		"url":    "testUrl",
+		"params": "snow",
+		"num":    100,
+	}
+
+	Info(nil, "===TestBatchNewWithField", BatchNewWithField(logInfo))
+}

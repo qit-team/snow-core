@@ -132,6 +132,14 @@ func splitMsg(msg []interface{}) (withFields []*withField, newMsg []interface{})
 		switch v.(type) {
 		case *withField:
 			withFields = append(withFields, v.(*withField))
+		case []*withField:
+			// 如果是通过batchNewWithFields，需要做如下处理
+			tempWithFieldsList := v.([]*withField)
+			if len(tempWithFieldsList) != 0 {
+				for _, tempWithField := range tempWithFieldsList {
+					withFields = append(withFields, tempWithField)
+				}
+			}
 		default:
 			newMsg = append(newMsg, v)
 		}
