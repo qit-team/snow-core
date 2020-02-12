@@ -2,10 +2,11 @@ package logger
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/http/ctxkit"
-	"testing"
 )
 
 var contextTest, contextTest1 *gin.Context
@@ -142,5 +143,39 @@ func TestNewWithField(t *testing.T) {
 		"num":    100,
 	}
 
-	Info(nil, "===TestBatchNewWithField", BatchNewWithField(logInfo))
+	// Info(nil, "===TestBatchNewWithField", BatchNewWithField(logInfo), "asdfasdfasdasdfasd")
+
+	Info(nil, "===TestBatchNewWithField", logInfo, "asdfasdfasdasdfasd")
+
+}
+
+func TestWithFileName(t *testing.T) {
+	// 测试NewWithField && BatchNewWithField方法
+	conf := config.LogConfig{
+		Handler:  "file",
+		Level:    "info",
+		Dir:      "../../",
+		FileName: "TestWithFileName",
+	}
+
+	defer func() {
+		if e := recover(); e != nil {
+			t.Error("test NewWithField panic")
+		}
+	}()
+
+	err := Pr.Register("logger", conf, true)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	Info(nil, "asdfasdfasdf", map[string]interface{}{
+		"c": 123,
+	})
+
+	// GetLoggerWithFileName("nihao").WithContext(context.Background()).Info("asdfaosdfaosdihfaposd")
+	// GetLoggerWithFileName("buhao").WithField("a", "b").Info(map[string]interface{}{
+	// 	"c": 123,
+	// })
 }

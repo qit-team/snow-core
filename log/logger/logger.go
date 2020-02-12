@@ -21,7 +21,7 @@ func GetStdOutWriter(path string) (writer *os.File) {
 	return
 }
 
-func InitLog(logHandler string, logDir string, logLevel string) (*logrus.Logger, error) {
+func InitLog(logHandler string, logDir string, logLevel string, fileName string) (*logrus.Logger, error) {
 	logger := logrus.New()
 
 	//设置日志等级
@@ -38,7 +38,10 @@ func InitLog(logHandler string, logDir string, logLevel string) (*logrus.Logger,
 		writer := GetStdOutWriter(logDir)
 		logger.SetOutput(writer)
 	} else {
-		rollHook, err := NewRollHook(logger, logDir, "snow")
+		if fileName == "" {
+			fileName = "snow"
+		}
+		rollHook, err := NewRollHook(logger, logDir, fileName)
 		if err != nil {
 			return nil, err
 		}

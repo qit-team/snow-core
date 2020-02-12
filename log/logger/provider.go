@@ -81,7 +81,7 @@ func (p *provider) Close() error {
 
 //注入单例
 func setSingleton(diName string, conf config.LogConfig) (ins *logrus.Logger, err error) {
-	ins, err = InitLog(conf.Handler, conf.Dir, conf.Level)
+	ins, err = InitLog(conf.Handler, conf.Dir, conf.Level, conf.FileName)
 	if err == nil {
 		container.App.SetSingleton(diName, ins)
 	}
@@ -116,4 +116,19 @@ func getSingleton(diName string, lazy bool) *logrus.Logger {
 func GetLogger(args ...string) *logrus.Logger {
 	diName := helper.GetDiName(Pr.dn, args...)
 	return getSingleton(diName, true)
+}
+
+func GetLoggerWithFileName(fileName string) *logrus.Logger {
+	if Pr.dn == "" || fileName == "" {
+		return nil
+	}
+	dnConfig := Pr.mp[Pr.dn].(config.LogConfig)
+	newLogConfig := config.LogConfig{
+		Handler:  dnConfig.Handler,
+		Level:    dnConfig.Level,
+		Dir:      dnConfig.Dir,
+		FileName: fileName,
+	}
+	Pr.mp[fileName] = newLogConfig
+	return getSingleton(fileName, true)
 }
