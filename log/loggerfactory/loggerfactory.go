@@ -5,10 +5,10 @@ import (
 	"github.com/qit-team/snow-core/log/loggerinterface"
 )
 
-var loggerInstace map[string]interface{}
+var loggerInstaces map[string]interface{}
 
 func init() {
-	loggerInstace = map[string]interface{}{}
+	loggerInstaces = map[string]interface{}{}
 }
 
 func GetLogger(fileName string, loggerType string) loggerinterface.LoggerInterface {
@@ -18,12 +18,12 @@ func GetLogger(fileName string, loggerType string) loggerinterface.LoggerInterfa
 	switch loggerType {
 	case "customlogger":
 		key := loggerType + "-" + fileName
-		if value, ok := loggerInstace[key]; ok {
+		if value, ok := loggerInstaces[key]; ok {
 			return value.(*customlogger.CustomLogger)
 		}
 		instance := new(customlogger.CustomLogger)
 		instance.FileName = fileName
-		loggerInstace[key] = instance
+		loggerInstaces[key] = instance
 		return instance
 	default:
 		return nil

@@ -39,6 +39,7 @@ func InitLog(logHandler string, logDir string, logLevel string, fileName string)
 		logger.SetOutput(writer)
 	} else {
 		if fileName == "" {
+			// default name is snow
 			fileName = "snow"
 		}
 		rollHook, err := NewRollHook(logger, logDir, fileName)

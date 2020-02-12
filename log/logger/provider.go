@@ -123,6 +123,7 @@ func GetLoggerWithFileName(fileName string) *logrus.Logger {
 		return nil
 	}
 	dnConfig := Pr.mp[Pr.dn].(config.LogConfig)
+	// use default config except file name
 	newLogConfig := config.LogConfig{
 		Handler:  dnConfig.Handler,
 		Level:    dnConfig.Level,
