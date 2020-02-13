@@ -143,5 +143,5 @@ func TestNewWithField(t *testing.T) {
 		"num":    100,
 	}
 
-	Info(nil, "===TestBatchNewWithField", BatchNewWithField(logInfo), "asdfasdfasdasdfasd")
+	Info(nil, "===TestBatchNewWithField", BatchNewWithField(logInfo))
 }

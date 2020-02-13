@@ -28,7 +28,7 @@ func TestLoggerFactory(t *testing.T) {
 	}
 
 	fileName := "loggerfactory"
-	GetLogger(fileName, "").Info(nil, "测试日志工厂模式", map[string]interface{}{
-		"name": "zhangsan",
+	GetLogger(fileName, "").Info(nil, "Test logger factory", map[string]interface{}{
+		"name": "liou",
 	})
 }
