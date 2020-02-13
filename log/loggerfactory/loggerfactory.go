@@ -5,19 +5,26 @@ import (
 	"github.com/qit-team/snow-core/log/loggerinterface"
 )
 
+// save logger instance avoid create mutilple times
 var loggerInstaces map[string]interface{}
 
 func init() {
 	loggerInstaces = map[string]interface{}{}
 }
 
-func GetLogger(fileName string, loggerType string) loggerinterface.LoggerInterface {
-	if loggerType == "" {
-		loggerType = "customlogger"
+// GetLogger get logger implementation, the fileName is the file where log will write to and the first value of args is
+// the logger interface implementation, if not found, return nil.
+func GetLogger(fileName string, args ...string) loggerinterface.LoggerInterface {
+	loggerName := ""
+	if len(args) > 0 {
+		loggerName = args[0]
 	}
-	switch loggerType {
+	if loggerName == "" {
+		loggerName = "customlogger"
+	}
+	switch loggerName {
 	case "customlogger":
-		key := loggerType + "-" + fileName
+		key := loggerName + "-" + fileName
 		if value, ok := loggerInstaces[key]; ok {
 			return value.(*customlogger.CustomLogger)
 		}

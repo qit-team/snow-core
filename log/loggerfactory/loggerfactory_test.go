@@ -28,7 +28,7 @@ func TestLoggerFactory(t *testing.T) {
 	}
 
 	fileName := "loggerfactory"
-	GetLogger(fileName, "").Info(nil, "Test logger factory", map[string]interface{}{
+	GetLogger(fileName).Info(nil, "Test logger factory", map[string]interface{}{
 		"name": "liou",
 	})
 }
