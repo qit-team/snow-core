@@ -7,6 +7,7 @@ import (
 	"github.com/qit-team/snow-core/helper"
 	"github.com/qit-team/snow-core/kernel/container"
 	"sync"
+	"xorm.io/xorm"
 )
 
 const (
