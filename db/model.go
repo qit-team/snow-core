@@ -2,7 +2,7 @@ package db
 
 import (
 	"errors"
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 var (

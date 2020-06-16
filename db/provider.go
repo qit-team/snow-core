@@ -3,7 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/helper"
 	"github.com/qit-team/snow-core/kernel/container"

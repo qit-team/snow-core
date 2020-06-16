@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 	"github.com/qit-team/snow-core/config"
 	"testing"
 	//go test时需要开启
