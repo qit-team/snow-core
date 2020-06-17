@@ -6,14 +6,20 @@ import (
 	"time"
 )
 
-func waitJobStop(job *work.Job) {
+const __MIN_WAIT_TIMEOUT_SECONDS = 60
+
+func waitJobStop(job *work.Job, waitTimeout int) {
 	//等待结束
 	WaitStop()
 
 	//暂停新的Cron任务执行
 	job.Stop()
 
-	err := job.WaitStop(60 * time.Second)
+	if waitTimeout < __MIN_WAIT_TIMEOUT_SECONDS {
+		waitTimeout = __MIN_WAIT_TIMEOUT_SECONDS
+	}
+
+	err := job.WaitStop(time.Duration(waitTimeout) * time.Second)
 	if err != nil {
 		fmt.Println("wait stop error", err)
 	}
@@ -22,7 +28,7 @@ func waitJobStop(job *work.Job) {
 }
 
 // Start Job Worker
-func StartJob(pidFile string, registerWorker func(*work.Job)) error {
+func StartJob(pidFile string, registerWorker func(*work.Job), waitTimeout int) error {
 	//注册Job Worker
 	job := work.New()
 	registerWorker(job)
@@ -35,6 +41,6 @@ func StartJob(pidFile string, registerWorker func(*work.Job)) error {
 	RegisterSignal()
 
 	//等待停止信号
-	waitJobStop(job)
+	waitJobStop(job, waitTimeout)
 	return nil
 }

@@ -43,7 +43,7 @@ func init() {
 func TestStartJob(t *testing.T) {
 	pidFile := "../../.env_pid"
 
-	StartJob(pidFile, TempRegisterWorker)
+	StartJob(pidFile, TempRegisterWorker, 60)
 }
 
 func TempRegisterWorker(job *work.Job) {
