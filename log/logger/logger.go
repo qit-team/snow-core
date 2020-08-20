@@ -21,7 +21,7 @@ func GetStdOutWriter(path string) (writer *os.File) {
 	return
 }
 
-func InitLog(logHandler string, logDir string, logLevel string) (*logrus.Logger, error) {
+func InitLog(logHandler string, logDir string, logLevel string, segment bool) (*logrus.Logger, error) {
 	logger := logrus.New()
 
 	//设置日志等级
@@ -35,15 +35,20 @@ func InitLog(logHandler string, logDir string, logLevel string) (*logrus.Logger,
 
 	//设置日志输出方式 标准输出或文件
 	if logHandler == HandlerStdout {
-		writer := GetStdOutWriter(logDir)
+		writer := os.Stdout
 		logger.SetOutput(writer)
-	} else {
-		rollHook, err := NewRollHook(logger, logDir, "snow")
-		if err != nil {
-			return nil, err
-		}
-		logger.Hooks.Add(rollHook)
+		return logger, nil
 	}
+
+	if segment {
+		return LogSegment(logger, logDir, "snow")
+	}
+
+	rollHook, err := NewRollHook(logger, logDir, "snow")
+	if err != nil {
+		return nil, err
+	}
+	logger.Hooks.Add(rollHook)
 
 	return logger, nil
 }

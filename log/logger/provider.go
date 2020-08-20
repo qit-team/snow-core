@@ -81,7 +81,7 @@ func (p *provider) Close() error {
 
 //注入单例
 func setSingleton(diName string, conf config.LogConfig) (ins *logrus.Logger, err error) {
-	ins, err = InitLog(conf.Handler, conf.Dir, conf.Level)
+	ins, err = InitLog(conf.Handler, conf.Dir, conf.Level, conf.Segment)
 	if err == nil {
 		container.App.SetSingleton(diName, ins)
 	}

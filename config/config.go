@@ -57,6 +57,7 @@ type MnsConfig struct {
 type LogConfig struct {
 	Handler  string
 	Level    string
+	Segment  bool
 	Dir      string
 	FileName string
 }
