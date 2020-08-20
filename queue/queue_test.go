@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"github.com/qit-team/snow-core/config"
 	"fmt"
+	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/redis"
 	"testing"
 )

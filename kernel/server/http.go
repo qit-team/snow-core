@@ -1,11 +1,11 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	"fmt"
+	"github.com/fvbock/endless"
+	"github.com/gin-gonic/gin"
 	"github.com/qit-team/snow-core/config"
 	"strconv"
-	"github.com/fvbock/endless"
 	"syscall"
 )
 

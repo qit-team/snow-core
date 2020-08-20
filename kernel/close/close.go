@@ -8,7 +8,7 @@ var (
 )
 
 type Closeable interface {
-	Close() (error)
+	Close() error
 }
 
 //注册应用停止时需要释放链接的服务

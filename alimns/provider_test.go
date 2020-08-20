@@ -1,8 +1,8 @@
 package alimns
 
 import (
-	"testing"
 	"github.com/qit-team/snow-core/config"
+	"testing"
 )
 
 func Test_getSingleton(t *testing.T) {
@@ -33,7 +33,7 @@ func TestProvider(t *testing.T) {
 	}
 
 	arr = Pr.Provides()
-	if !(len(arr) == 2 && arr[1] == "mns1"|| arr[1] == "mns") {
+	if !(len(arr) == 2 && arr[1] == "mns1" || arr[1] == "mns") {
 		t.Errorf("Provides is not match. %v", arr)
 		return
 	}

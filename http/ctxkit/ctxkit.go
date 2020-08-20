@@ -1,13 +1,13 @@
 package ctxkit
 
 import (
-	"github.com/gin-gonic/gin"
 	"context"
-	"github.com/qit-team/snow-core/utils"
 	"crypto/md5"
-	"fmt"
-	"strings"
 	"errors"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/qit-team/snow-core/utils"
+	"strings"
 )
 
 const (
@@ -72,10 +72,10 @@ func GenerateTraceId(ctx context.Context) (string, error) {
 	mdTemp := md5.Sum([]byte(randomId))
 	mdCode := fmt.Sprintf("%x", mdTemp)
 	mdStr := strings.ToUpper(mdCode)
-    if len(mdStr) < 32 {
-    	return "", errors.New("grenerateTraceIdError")
+	if len(mdStr) < 32 {
+		return "", errors.New("grenerateTraceIdError")
 	}
-	traceId := mdStr[0 : 8] + "-" + mdStr[8 : 12] + "-" + mdStr[12 : 16] + "-" + mdStr[16 : 20] + "-" + mdStr[20 : 32]
+	traceId := mdStr[0:8] + "-" + mdStr[8:12] + "-" + mdStr[12:16] + "-" + mdStr[16:20] + "-" + mdStr[20:32]
 
 	SetTraceId(ctx, traceId)
 	return traceId, nil

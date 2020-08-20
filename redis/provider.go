@@ -1,13 +1,13 @@
 package redis
 
 import (
-	"github.com/qit-team/snow-core/config"
-	"github.com/qit-team/snow-core/kernel/container"
-	redis_pool "github.com/hetiansu5/go-redis-pool"
-	"sync"
-	"github.com/qit-team/snow-core/helper"
-	"fmt"
 	"errors"
+	"fmt"
+	redis_pool "github.com/hetiansu5/go-redis-pool"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/helper"
+	"github.com/qit-team/snow-core/kernel/container"
+	"sync"
 )
 
 const (

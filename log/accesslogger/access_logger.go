@@ -1,9 +1,9 @@
 package accesslogger
 
 import (
-	"github.com/qit-team/snow-core/log/logger"
 	"github.com/hetiansu5/accesslog"
 	coresio "github.com/hetiansu5/cores/io"
+	"github.com/qit-team/snow-core/log/logger"
 	"io"
 )
 

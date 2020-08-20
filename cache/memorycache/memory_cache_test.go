@@ -2,10 +2,10 @@ package memorycache
 
 import (
 	"context"
+	"errors"
 	"github.com/qit-team/snow-core/cache"
 	"testing"
 	"time"
-	"errors"
 )
 
 var c cache.Cache
@@ -208,7 +208,6 @@ func TestMemoryCache_IncrBy(t *testing.T) {
 	}
 }
 
-
 func TestMemoryCache_DecrBy(t *testing.T) {
 	ctx := context.TODO()
 	key := "test-desc"
@@ -231,7 +230,7 @@ func TestMemoryCache_DecrBy(t *testing.T) {
 		return
 	}
 
-	c.Delete(ctx , key)
+	c.Delete(ctx, key)
 	res, err = c.DecrBy(ctx, key, -30)
 	if err != nil {
 		t.Error(err)
@@ -241,6 +240,3 @@ func TestMemoryCache_DecrBy(t *testing.T) {
 		return
 	}
 }
-
-
-

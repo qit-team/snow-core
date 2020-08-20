@@ -1,8 +1,8 @@
 package alimns
 
 import (
-	"testing"
 	"github.com/qit-team/snow-core/config"
+	"testing"
 )
 
 func TestNewMnsClient(t *testing.T) {

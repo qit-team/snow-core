@@ -2,9 +2,9 @@ package db
 
 import (
 	"fmt"
-	"xorm.io/xorm"
 	"github.com/qit-team/snow-core/config"
 	"testing"
+	"xorm.io/xorm"
 	//go test时需要开启
 	_ "github.com/go-sql-driver/mysql"
 )

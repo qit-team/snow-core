@@ -1,8 +1,8 @@
 package command
 
 import (
-	"sync"
 	"errors"
+	"sync"
 )
 
 var (

@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestHttpBuildQuery(t *testing.T) {
@@ -32,8 +32,8 @@ func TestHttpBuildQuery(t *testing.T) {
 		s != "map%5Ba1%5D=111&map%5Bb2%5D=2.3&map%5Bb3%5D%5B0%5D=1&map%5Bb3%5D%5B1%5D=4&a%5B0%5D=b&a%5B1%5D=c" &&
 		s != "a%5B0%5D=b&a%5B1%5D=c&map%5Bb2%5D=2.3&map%5Bb3%5D%5B0%5D=1&map%5Bb3%5D%5B1%5D=4&map%5Ba1%5D=111" &&
 		s != "a%5B1%5D=c&a%5B0%5D=b&map%5Ba1%5D=111&map%5Bb2%5D=2.3&map%5Bb3%5D%5B0%5D=1&map%5Bb3%5D%5B1%5D=4" {
-			fmt.Println("HttpBuildQuery", s)
-		    //t.Error("HttpBuildQuery failed")
-		    return
+		fmt.Println("HttpBuildQuery", s)
+		//t.Error("HttpBuildQuery failed")
+		return
 	}
 }

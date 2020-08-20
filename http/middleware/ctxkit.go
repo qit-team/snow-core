@@ -16,7 +16,7 @@ func GenContextKit(c *gin.Context) {
 	} else {
 		_, err := ctxkit.GenerateTraceId(c)
 		if err != nil {
-			logger.Error(c,"===GenContextKit.setTraceIdError===", err)
+			logger.Error(c, "===GenContextKit.setTraceIdError===", err)
 		}
 	}
 }
