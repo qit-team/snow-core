@@ -41,14 +41,18 @@ func InitLog(logHandler string, logDir string, logLevel string, segment bool) (*
 	}
 
 	if segment {
-		return LogSegment(logger, logDir, "snow")
+		hook, err := NewLfsHook(logger, logDir, "snow")
+		if err != nil {
+			return nil, err
+		}
+		logger.Hooks.Add(hook)
+	} else {
+		rollHook, err := NewRollHook(logger, logDir, "snow")
+		if err != nil {
+			return nil, err
+		}
+		logger.Hooks.Add(rollHook)
 	}
-
-	rollHook, err := NewRollHook(logger, logDir, "snow")
-	if err != nil {
-		return nil, err
-	}
-	logger.Hooks.Add(rollHook)
 
 	return logger, nil
 }
