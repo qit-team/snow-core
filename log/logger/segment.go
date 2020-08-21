@@ -22,8 +22,7 @@ func NewLfsHook(l *logrus.Logger, logDir, name string) (*lfshook.LfsHook, error)
 	infoWriter, err = rotatelogs.New(
 		infoPath,
 		rotatelogs.WithLinkName(linkInfoPath),
-		rotatelogs.WithMaxAge(time.Duration(86400)*time.Second),
-		rotatelogs.WithRotationTime(time.Duration(604800)*time.Second),
+		rotatelogs.WithRotationTime(time.Duration(24)*time.Hour),
 	)
 	if err != nil {
 		return nil, err
@@ -34,8 +33,7 @@ func NewLfsHook(l *logrus.Logger, logDir, name string) (*lfshook.LfsHook, error)
 	warnWriter, err = rotatelogs.New(
 		warnPath,
 		rotatelogs.WithLinkName(linkWarnPath),
-		rotatelogs.WithMaxAge(time.Duration(86400)*time.Second),
-		rotatelogs.WithRotationTime(time.Duration(604800)*time.Second),
+		rotatelogs.WithRotationTime(time.Duration(24)*time.Hour),
 	)
 	if err != nil {
 		return nil, err
@@ -46,8 +44,7 @@ func NewLfsHook(l *logrus.Logger, logDir, name string) (*lfshook.LfsHook, error)
 	errorWriter, err = rotatelogs.New(
 		errorPath,
 		rotatelogs.WithLinkName(linkErrorPath),
-		rotatelogs.WithMaxAge(time.Duration(86400)*time.Second),
-		rotatelogs.WithRotationTime(time.Duration(604800)*time.Second),
+		rotatelogs.WithRotationTime(time.Duration(24)*time.Hour),
 	)
 	if err != nil {
 		return nil, err
