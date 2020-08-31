@@ -1,13 +1,13 @@
 package alimns
 
 import (
-	"github.com/qit-team/snow-core/config"
-	"github.com/qit-team/snow-core/kernel/container"
-	"github.com/aliyun/aliyun-mns-go-sdk"
-	"fmt"
-	"github.com/qit-team/snow-core/helper"
-	"sync"
 	"errors"
+	"fmt"
+	"github.com/aliyun/aliyun-mns-go-sdk"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/helper"
+	"github.com/qit-team/snow-core/kernel/container"
+	"sync"
 )
 
 const (

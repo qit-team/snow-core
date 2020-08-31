@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"github.com/qit-team/snow-core/log/accesslogger"
 	"github.com/gin-gonic/gin"
 	"github.com/hetiansu5/accesslog"
+	"github.com/qit-team/snow-core/log/accesslogger"
 	"time"
 )
 

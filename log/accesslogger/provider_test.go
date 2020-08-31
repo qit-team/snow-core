@@ -1,8 +1,8 @@
 package accesslogger
 
 import (
-	"testing"
 	"github.com/qit-team/snow-core/config"
+	"testing"
 )
 
 func Test_getSingleton(t *testing.T) {

@@ -2,14 +2,14 @@ package httputil
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"github.com/qit-team/snow-core/http/ctxkit"
 	"github.com/qit-team/snow-core/utils"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
-	"fmt"
-	"errors"
-	"github.com/qit-team/snow-core/http/ctxkit"
 )
 
 const (
@@ -93,7 +93,7 @@ func NewGetRequest(url string, params map[string]interface{}, args ...interface{
 	if len(args) > 0 {
 		SetHeaders(req, args[0])
 	}
-	return;
+	return
 }
 
 //表单POST Request对象

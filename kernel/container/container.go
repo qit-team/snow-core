@@ -1,11 +1,11 @@
 package container
 
 import (
-	"sync"
-	"reflect"
-	"fmt"
-	"strings"
 	"errors"
+	"fmt"
+	"reflect"
+	"strings"
+	"sync"
 )
 
 var (

@@ -1,10 +1,10 @@
 package redis
 
 import (
-	"testing"
+	"github.com/qit-team/snow-core/config"
 	"reflect"
 	"strconv"
-	"github.com/qit-team/snow-core/config"
+	"testing"
 	"time"
 )
 

@@ -1,8 +1,8 @@
 package iputil
 
 import (
-	"net"
 	"errors"
+	"net"
 )
 
 var (

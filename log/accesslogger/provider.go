@@ -1,13 +1,13 @@
 package accesslogger
 
 import (
-	"github.com/qit-team/snow-core/config"
-	"github.com/qit-team/snow-core/kernel/container"
-	"github.com/hetiansu5/accesslog"
-	"sync"
 	"errors"
-	"github.com/qit-team/snow-core/helper"
 	"fmt"
+	"github.com/hetiansu5/accesslog"
+	"github.com/qit-team/snow-core/config"
+	"github.com/qit-team/snow-core/helper"
+	"github.com/qit-team/snow-core/kernel/container"
+	"sync"
 )
 
 const SingletonMain = "access_logger"

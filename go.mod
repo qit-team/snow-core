@@ -16,7 +16,10 @@ require (
 	github.com/hetiansu5/cores v1.0.0
 	github.com/hetiansu5/go-redis-pool v1.1.4
 	github.com/klauspost/compress v1.10.7 // indirect
+	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible // indirect
+	github.com/lestrrat-go/strftime v1.0.3 // indirect
 	github.com/qit-team/work v0.3.9
+	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5 // indirect
 	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/valyala/fasthttp v1.13.1 // indirect

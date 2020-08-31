@@ -2,12 +2,12 @@ package memorycache
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/qit-team/snow-core/cache"
+	"strconv"
 	"sync"
 	"time"
-	"errors"
-	"strconv"
-	"fmt"
 )
 
 const (

@@ -1,9 +1,9 @@
 package ctxkit
 
 import (
-	"testing"
-	"github.com/gin-gonic/gin"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"testing"
 )
 
 var c *gin.Context
