@@ -24,6 +24,10 @@ func GetStdOutWriter(path string) (writer *os.File) {
 func InitLog(logFileName, logHandler string, logDir string, logLevel string, segment bool) (*logrus.Logger, error) {
 	logger := logrus.New()
 
+	if len(logFileName) == 0 {
+		logFileName = "snow"
+	}
+
 	//设置日志等级
 	level, err := logrus.ParseLevel(logLevel)
 	if err == nil {
