@@ -3,13 +3,14 @@ package alirocketqueue
 import (
 	"context"
 	"fmt"
-	"github.com/aliyunmq/mq-http-go-sdk"
-	"github.com/gogap/errors"
-	"github.com/qit-team/snow-core/aliyunmq"
-	"github.com/qit-team/snow-core/queue"
 	"strings"
 	"sync"
 	"time"
+
+	mq_http_sdk "github.com/aliyunmq/mq-http-go-sdk"
+	"github.com/gogap/errors"
+	"github.com/qit-team/snow-core/aliyunmq"
+	"github.com/qit-team/snow-core/queue"
 )
 
 const (
@@ -56,7 +57,7 @@ func GetAliyunRocketQueue(diName string) queue.Queue {
  * args[0] instanceId
  */
 func (m *AliyunMq) Enqueue(ctx context.Context, key string, message string, args ...interface{}) (bool, error) {
-	instanceId, _ := getOption(args...)
+	instanceId, _, _ := getOption(args...)
 
 	// 获取rocketmq的producer，这个和mns不同，区分了producer和consumer，alimns统一为client
 	mqProducer := m.client.GetProducer(instanceId, key)
@@ -80,10 +81,10 @@ func (m *AliyunMq) Enqueue(ctx context.Context, key string, message string, args
 * return 第一个参数是消息 第二个参数是aliyunmq的ReceiptHandle命名为token，通过token确定消息是否从队列删除，第三个参数为消费次数
  */
 func (m *AliyunMq) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, token string, dequeueCount int64, err error) {
-	instanceId, groupId := getOption(args...)
+	instanceId, groupId, messageTag := getOption(args...)
 
 	// 获取rocketmq的consumer
-	mqConsumer := m.client.GetConsumer(instanceId, key, groupId, "")
+	mqConsumer := m.client.GetConsumer(instanceId, key, groupId, messageTag)
 
 	//endChan := make(chan int)
 	respChan := make(chan mq_http_sdk.ConsumeMessageResponse)
@@ -165,17 +166,17 @@ func (m *AliyunMq) BatchEnqueue(ctx context.Context, key string, messageList []s
 
 /**
  * 确认消息接收
- * args[0]是instanceId，args[1]是groupId，
+ * args[0]是instanceId，args[1]是groupId，args[2]是messageTag
  */
 func (m *AliyunMq) AckMsg(ctx context.Context, key string, token string, args ...interface{}) (bool, error) {
 	if len(token) < 1 {
 		return false, errors.New("token empty")
 	}
 
-	instanceId, groupId := getOption(args...)
+	instanceId, groupId, messageTag := getOption(args...)
 
 	// 获取rocketmq的consumer
-	mqConsumer := m.client.GetConsumer(instanceId, key, groupId, "")
+	mqConsumer := m.client.GetConsumer(instanceId, key, groupId, messageTag)
 
 	var handles []string
 	// rocketmq的确认函数是需要传递handle数组
@@ -200,9 +201,11 @@ func (m *AliyunMq) AckMsg(ctx context.Context, key string, token string, args ..
 }
 
 // 缺省参数统一获取
-func getOption(args ...interface{}) (instanceId, groupId string) {
+// args[0]是instanceId，args[1]是groupId，args[2]是messageTag
+func getOption(args ...interface{}) (instanceId, groupId, messageTag string) {
 	instanceId = ""
 	groupId = ""
+	messageTag = ""
 
 	l := len(args)
 	if l > 0 {
@@ -214,6 +217,12 @@ func getOption(args ...interface{}) (instanceId, groupId string) {
 			tempGroup, ok := args[1].(string)
 			if ok {
 				groupId = tempGroup
+			}
+		}
+		if l > 2 {
+			tempTag, ok := args[2].(string)
+			if ok {
+				messageTag = tempTag
 			}
 		}
 	}
