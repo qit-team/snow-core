@@ -19,49 +19,81 @@ const (
 
 func SetTraceId(ctx context.Context, value string) {
 	if ctxGin, ok := ctx.(*gin.Context); ok {
-		SetGinTraceId(ctxGin, value)
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinTraceId(ctxGin.Request.Context(), value))
+	} else {
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinTraceId(ctx, value))
 	}
 }
-func SetGinTraceId(ctx *gin.Context, value string) {
-	ctx.Set(TraceId, value)
+
+func SetGinTraceId(ctx context.Context, value string) context.Context {
+	return context.WithValue(ctx, TraceId, value)
 }
 
 func GetTraceId(ctx context.Context) string {
+	if ctxGin, ok := ctx.(*gin.Context); ok {
+		ctx = ctxGin.Request.Context()
+	}
 	s, _ := ctx.Value(TraceId).(string)
 	return s
 }
 
 func SetClientId(ctx context.Context, value string) {
 	if ctxGin, ok := ctx.(*gin.Context); ok {
-		SetGinClientId(ctxGin, value)
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinClientId(ctxGin.Request.Context(), value))
+	} else {
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinClientId(ctx, value))
 	}
 }
 
-func SetGinClientId(ctx *gin.Context, value string) {
-	ctx.Set(ClientIp, value)
+func SetGinClientId(ctx context.Context, value string) context.Context {
+	return context.WithValue(ctx, ClientIp, value)
 }
 
 func GetClientId(ctx context.Context) string {
+	if ctxGin, ok := ctx.(*gin.Context); ok {
+		ctx = ctxGin.Request.Context()
+	}
 	s, _ := ctx.Value(ClientIp).(string)
 	return s
 }
 
-// param to change
-func SetServerId(ctx *gin.Context, value string) {
-	ctx.Set(ServerIp, value)
+func SetServerId(ctx context.Context, value string) {
+	if ctxGin, ok := ctx.(*gin.Context); ok {
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinServerId(ctxGin.Request.Context(), value))
+	} else {
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinServerId(ctx, value))
+	}
+}
+
+func SetGinServerId(ctx context.Context, value string) context.Context {
+	return context.WithValue(ctx, ServerIp, value)
 }
 
 func GetServerId(ctx context.Context) string {
+	if ctxGin, ok := ctx.(*gin.Context); ok {
+		ctx = ctxGin.Request.Context()
+	}
 	s, _ := ctx.Value(ServerIp).(string)
 	return s
 }
 
 // param to change
-func SetHost(ctx *gin.Context, value string) {
-	ctx.Set(HOST, value)
+func SetHost(ctx context.Context, value string) {
+	if ctxGin, ok := ctx.(*gin.Context); ok {
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinHost(ctxGin.Request.Context(), value))
+	} else {
+		ctxGin.Request = ctxGin.Request.WithContext(SetGinHost(ctx, value))
+	}
+}
+
+func SetGinHost(ctx context.Context, value string) context.Context {
+	return context.WithValue(ctx, ServerIp, value)
 }
 
 func GetHost(ctx context.Context) string {
+	if ctxGin, ok := ctx.(*gin.Context); ok {
+		ctx = ctxGin.Request.Context()
+	}
 	s, _ := ctx.Value(HOST).(string)
 	return s
 }
