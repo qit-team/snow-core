@@ -9,6 +9,7 @@ const (
 	DriverTypeRedis    = "redis"
 	DriverTypeAliMns   = "ali_mns"
 	DriverTypeAliyunMq = "aliyun_mq"
+	DriverTypeRocketMq = "rocket_mq"
 )
 
 var (

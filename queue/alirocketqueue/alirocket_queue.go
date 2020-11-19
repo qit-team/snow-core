@@ -80,7 +80,7 @@ func (m *AliyunMq) Enqueue(ctx context.Context, key string, message string, args
 * param 第二个参数是队列名称，args[0]是instanceId，args[1]是groupId，目前只有rocketmq需要groupId
 * return 第一个参数是消息 第二个参数是aliyunmq的ReceiptHandle命名为token，通过token确定消息是否从队列删除，第三个参数为消费次数
  */
-func (m *AliyunMq) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, token string, dequeueCount int64, err error) {
+func (m *AliyunMq) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, tag string, token string, dequeueCount int64, err error) {
 	instanceId, groupId, messageTag := getOption(args...)
 
 	// 获取rocketmq的consumer
@@ -118,7 +118,7 @@ func (m *AliyunMq) Dequeue(ctx context.Context, key string, args ...interface{})
 				//	"\tProps: %s\n",
 				//	v.MessageId, v.PublishTime, v.MessageTag, v.ConsumedTimes,
 				//	v.FirstConsumeTime, v.NextConsumeTime, v.MessageBody, v.Properties)
-				return v.MessageBody, v.ReceiptHandle, v.ConsumedTimes, nil
+				return v.MessageBody, v.MessageTag, v.ReceiptHandle, v.ConsumedTimes, nil
 			}
 
 		}

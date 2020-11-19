@@ -76,7 +76,7 @@ func (m *MnsQueue) Enqueue(ctx context.Context, key string, message string, args
  * 队列消息出队
  * return 第一个参数是消息 第二个参数是mns的ReceiptHandle命名为token，通过token确定消息是否从队列删除
  */
-func (m *MnsQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, token string, dequeueCount int64, err error) {
+func (m *MnsQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, tag string, token string, dequeueCount int64, err error) {
 	respChan := make(chan ali_mns.MessageReceiveResponse)
 	errChan := make(chan error)
 	//目前只做单次读取，不需要实现常驻进程，这部分由job完成
@@ -95,7 +95,7 @@ func (m *MnsQueue) Dequeue(ctx context.Context, key string, args ...interface{})
 			err = err1
 		} else {
 			//处理resp.MessageBody 阿里这什么sdk 也不说明各个函数作用。。。暂时就按照demo例子里用到的函数写了
-			return resp.MessageBody, ret.ReceiptHandle, resp.DequeueCount, nil
+			return resp.MessageBody, "", ret.ReceiptHandle, resp.DequeueCount, nil
 		}
 	case err2 := <-errChan:
 		err = err2
