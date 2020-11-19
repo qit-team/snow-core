@@ -1,3 +1,8 @@
+## v0.1.23(2020-11-13)
+
+### New Features
+- queue增加对社区版rocketmq的支持
+
 ## v0.1.20(2020-08-21)
 
 ### New Features
