@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 
@@ -102,6 +103,7 @@ func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag strin
 							logger.Error(ctx, "Shutdown.Failure", err.Error())
 							return
 						}
+						return
 					default:
 					}
 				}
@@ -156,17 +158,38 @@ func (m *RocketQueue) Enqueue(ctx context.Context, key string, message string, a
 		return false, err
 	}
 
-	msg := &primitive.Message{
-		Topic: key,
-		Body:  []byte(message),
-	}
-	res, err := m.Producer.SendSync(ctx, msg)
-	if err != nil {
-		return false, err
+	_, _, messageTag := getOption(args...)
+	log.Printf("messageTag: %v", messageTag)
+	if len(messageTag) > 0 {
+		tags := strings.Split(messageTag, "||")
+		for i := 0; i < len(tags); i++ {
+			tag := strings.Trim(tags[i%3], " ")
+			msg := &primitive.Message{
+				Topic: key,
+				Body:  []byte(message),
+			}
+			msg.WithTag(tag)
+			log.Printf("send for tag: %v", tag)
+			res, err := m.Producer.SendSync(context.Background(), msg)
+			if err != nil {
+				return false, err
+			}
+			//logger.Info(ctx, "Enqueue", res.String())
+			log.Printf("Enqueue: %s %v", message, res.MsgID)
+		}
+	} else {
+		msg := &primitive.Message{
+			Topic: key,
+			Body:  []byte(message),
+		}
+		res, err := m.Producer.SendSync(ctx, msg)
+		if err != nil {
+			return false, err
+		}
+		//logger.Info(ctx, "Enqueue", res.String())
+		log.Printf("Enqueue: %s %v", message, res.MsgID)
 	}
 
-	//logger.Info(ctx, "Enqueue", res.String())
-	log.Printf("Enqueue: %s %v", message, res.MsgID)
 	return true, nil
 }
 
@@ -189,7 +212,6 @@ func (m *RocketQueue) Dequeue(ctx context.Context, key string, args ...interface
 			return "", "", "", 0, nil
 		}
 		return string(msg.Body), msg.GetTags(), "", int64(msg.ReconsumeTimes), nil
-
 	}
 }
 
