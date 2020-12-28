@@ -3,7 +3,6 @@ package ctxkit
 import (
 	"context"
 	"crypto/md5"
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/qit-team/snow-core/utils"
@@ -111,16 +110,15 @@ func GetHost(ctx context.Context) string {
 }
 
 //var once sync.Once
-func GenerateTraceId(ctx context.Context) (string, error) {
+func GenerateTraceId(ctx context.Context) (string, context.Context) {
 	randomId := utils.GenUUID()
 	mdTemp := md5.Sum([]byte(randomId))
 	mdCode := fmt.Sprintf("%x", mdTemp)
 	mdStr := strings.ToUpper(mdCode)
-	if len(mdStr) < 32 {
-		return "", errors.New("grenerateTraceIdError")
-	}
-	traceId := mdStr[0:8] + "-" + mdStr[8:12] + "-" + mdStr[12:16] + "-" + mdStr[16:20] + "-" + mdStr[20:32]
 
-	SetTraceId(ctx, traceId)
-	return traceId, nil
+	var traceId = mdStr
+	if len(mdStr) >= 32 {
+		traceId = mdStr[0:8] + "-" + mdStr[8:12] + "-" + mdStr[12:16] + "-" + mdStr[16:20] + "-" + mdStr[20:32]
+	}
+	return traceId, SetTraceId(ctx, traceId)
 }

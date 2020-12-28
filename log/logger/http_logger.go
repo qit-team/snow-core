@@ -51,12 +51,8 @@ func formatLog(c context.Context, t string, args ...*withField) logrus.Fields {
 		if traceId != "" {
 			data["trace_id"] = traceId
 		} else {
-			traceId, err := ctxkit.GenerateTraceId(c)
+			traceId, _ := ctxkit.GenerateTraceId(c)
 			data["trace_id"] = traceId
-
-			if err != nil {
-				GetLogger().WithFields(nil).Error(err)
-			}
 		}
 
 		domain := ctxkit.GetHost(c)
