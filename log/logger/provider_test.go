@@ -43,11 +43,7 @@ func TestProvider(t *testing.T) {
 	}
 
 	// test generate trace id
-	traceId, err := ctxkit.GenerateTraceId(contextTest)
-
-	if err != nil {
-		t.Error("generateTraceIdError", err, traceId)
-	}
+	traceId, _ := ctxkit.GenerateTraceId(contextTest)
 
 	// 对context设置traceId
 	ctxkit.SetTraceId(contextTest, traceId)
