@@ -3,11 +3,11 @@ package rocketmq
 import (
 	"errors"
 	"fmt"
+
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
-
 	"github.com/qit-team/snow-core/config"
 )
 
@@ -23,8 +23,9 @@ func NewRocketMqClient(mqConfig config.RocketMqConfig) (client *RocketClient, er
 
 	if mqConfig.EndPoint != "" {
 		client = new(RocketClient)
-		//
-		client.Consumer, err = rocketmq.NewPushConsumer(
+
+		consumerOptions := make([]consumer.Option, 0)
+		consumerOptions = []consumer.Option{
 			consumer.WithNameServer([]string{mqConfig.EndPoint}),
 			consumer.WithCredentials(primitive.Credentials{
 				AccessKey: mqConfig.AccessKey,
@@ -35,12 +36,18 @@ func NewRocketMqClient(mqConfig config.RocketMqConfig) (client *RocketClient, er
 			consumer.WithConsumerModel(consumer.Clustering),
 			consumer.WithConsumeFromWhere(consumer.ConsumeFromFirstOffset),
 			consumer.WithAutoCommit(true),
-		)
+		}
+		if len(mqConfig.ConsumerOptions) > 0 {
+			consumerOptions = append(consumerOptions, mqConfig.ConsumerOptions...)
+		}
+
+		client.Consumer, err = rocketmq.NewPushConsumer(consumerOptions...)
 		if err != nil {
 			return nil, err
 		}
 
-		client.Producer, err = rocketmq.NewProducer(
+		producerOptions := make([]producer.Option, 0)
+		producerOptions = []producer.Option{
 			producer.WithNameServer([]string{mqConfig.EndPoint}),
 			producer.WithCredentials(primitive.Credentials{
 				AccessKey: mqConfig.AccessKey,
@@ -49,7 +56,12 @@ func NewRocketMqClient(mqConfig config.RocketMqConfig) (client *RocketClient, er
 			producer.WithRetry(2),
 			producer.WithGroupName(mqConfig.GroupId),
 			producer.WithNamespace(mqConfig.InstanceId),
-		)
+		}
+		if len(mqConfig.ProducerOptions) > 0 {
+			producerOptions = append(producerOptions, mqConfig.ProducerOptions...)
+		}
+
+		client.Producer, err = rocketmq.NewProducer(producerOptions...)
 		if err != nil {
 			return nil, err
 		}
