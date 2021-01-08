@@ -1,6 +1,11 @@
 package config
 
-import "time"
+import (
+	"time"
+
+	"github.com/apache/rocketmq-client-go/v2/consumer"
+	"github.com/apache/rocketmq-client-go/v2/producer"
+)
 
 type RedisBaseConfig struct {
 	Host     string
@@ -74,9 +79,11 @@ type AliyunMqConfig struct {
 }
 
 type RocketMqConfig struct {
-	EndPoint   string
-	AccessKey  string
-	SecretKey  string
-	GroupId    string
-	InstanceId string
+	EndPoint        string
+	AccessKey       string
+	SecretKey       string
+	GroupId         string
+	InstanceId      string
+	ConsumerOptions []consumer.Option
+	ProducerOptions []producer.Option
 }

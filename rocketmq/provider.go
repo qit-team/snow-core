@@ -3,11 +3,11 @@ package rocketmq
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/helper"
 	"github.com/qit-team/snow-core/kernel/container"
-	"sync"
 )
 
 const (

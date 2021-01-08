@@ -63,10 +63,8 @@ func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag strin
 			}
 			err = rq.Consumer.Subscribe(topic, selector, func(ctx context.Context, messages ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 				// 取到的消息放入管道，交给下游处理
-				for i, msg := range messages {
+				for _, msg := range messages {
 					rq.consumerMessageChan <- msg
-					log.Printf("[%d] tag: [%s], message: [%s]", i+1, msg.GetTags(), string(msg.Body))
-					logger.Info(ctx, "Subscribe.Msg", logger.NewWithField("tag", msg.GetTags()), logger.NewWithField("msg_id", msg.MsgId), logger.NewWithField("message", string(msg.Body)))
 				}
 
 				return consumer.ConsumeSuccess, nil

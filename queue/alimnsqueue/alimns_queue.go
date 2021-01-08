@@ -3,11 +3,12 @@ package alimnsqueue
 import (
 	"context"
 	"errors"
-	"github.com/aliyun/aliyun-mns-go-sdk"
-	"github.com/qit-team/snow-core/alimns"
-	"github.com/qit-team/snow-core/queue"
 	"strings"
 	"sync"
+
+	ali_mns "github.com/aliyun/aliyun-mns-go-sdk"
+	"github.com/qit-team/snow-core/alimns"
+	"github.com/qit-team/snow-core/queue"
 )
 
 const (
