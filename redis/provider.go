@@ -3,7 +3,9 @@ package redis
 import (
 	"errors"
 	"fmt"
-	redis_pool "github.com/hetiansu5/go-redis-pool"
+	"github.com/SkyAPM/go2sky"
+	"github.com/SkyAPM/go2sky/reporter"
+	goredis "github.com/go-redis/redis/v8"
 	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/helper"
 	"github.com/qit-team/snow-core/kernel/container"
@@ -75,21 +77,57 @@ func (p *provider) Close() error {
 	}
 	return nil
 }
+func initTracer(conf config.RedisConfig) (*go2sky.Tracer, error) {
+	if conf.Option.SkyWalking.SkyWalkingEnable && len(conf.Option.SkyWalking.SkyWalkingOapServer) > 0 {
+		report, err := reporter.NewGRPCReporter(conf.Option.SkyWalking.SkyWalkingOapServer)
+		if err != nil {
+			return nil, err
+		}
+		rdsName := fmt.Sprintf("%s:%d", conf.Master.Host, conf.Master.Port)
+		tracer, err := go2sky.NewTracer(rdsName, go2sky.WithReporter(report))
+		if err != nil {
+			return nil, err
+		}
+		if tracer == nil {
+			return nil, err
+		}
+		return tracer, nil
+	}
+	return nil, nil
+}
 
 //注入单例
-func setSingleton(diName string, conf config.RedisConfig) (ins *redis_pool.ReplicaPool, err error) {
+func setSingleton(diName string, conf config.RedisConfig) (ins *goredis.Client, err error) {
 	ins, err = NewRedisClient(conf)
-	if err == nil {
+	if err != nil {
+		return
+	}
+	if ins != nil {
 		container.App.SetSingleton(diName, ins)
+	}
+
+	if ins != nil && conf.Option.SkyWalking.SkyWalkingEnable && len(conf.Option.SkyWalking.SkyWalkingOapServer) > 0 {
+		tracer, err2 := initTracer(conf)
+		if err2 != nil || tracer == nil {
+			fmt.Println("redis SkyWalking tracer is nil or create failed")
+			return
+		}
+
+		hook := NewSkywalkingHook(tracer)
+		if hook == nil {
+			fmt.Println("redis SkyWalking hook is nil")
+			return
+		}
+		GetRedis(diName).AddHook(hook)
 	}
 	return
 }
 
 //获取单例
-func getSingleton(diName string, lazy bool) *redis_pool.ReplicaPool {
+func getSingleton(diName string, lazy bool) *goredis.Client {
 	rc := container.App.GetSingleton(diName)
 	if rc != nil {
-		return rc.(*redis_pool.ReplicaPool)
+		return rc.(*goredis.Client)
 	}
 	if lazy == false {
 		return nil
@@ -110,7 +148,46 @@ func getSingleton(diName string, lazy bool) *redis_pool.ReplicaPool {
 }
 
 //外部通过注入别名获取资源，解耦资源的关系
-func GetRedis(args ...string) *redis_pool.ReplicaPool {
+func GetRedis(args ...string) *goredis.Client {
 	diName := helper.GetDiName(Pr.dn, args...)
 	return getSingleton(diName, true)
+}
+
+//注入单例
+func setClusterSingleton(diName string, conf config.RedisConfig) (ins *goredis.ClusterClient, err error) {
+	ins, err = NewClusterRedisClient(conf)
+	if err == nil {
+		container.App.SetSingleton(diName, ins)
+	}
+	return
+}
+
+//获取单例
+func getClusterSingleton(diName string, lazy bool) *goredis.ClusterClient {
+	rc := container.App.GetSingleton(diName)
+	if rc != nil {
+		return rc.(*goredis.ClusterClient)
+	}
+	if lazy == false {
+		return nil
+	}
+
+	Pr.mu.RLock()
+	conf, ok := Pr.mp[diName].(config.RedisConfig)
+	Pr.mu.RUnlock()
+	if !ok {
+		panic(fmt.Sprintf("redis di_name:%s not exist", diName))
+	}
+
+	ins, err := setClusterSingleton(diName, conf)
+	if err != nil {
+		panic(fmt.Sprintf("redis di_name:%s err:%s", diName, err.Error()))
+	}
+	return ins
+}
+
+//获取集群模式redisClient
+func GetClusterRedis(args ...string) *goredis.ClusterClient {
+	diName := helper.GetDiName(Pr.dn, args...)
+	return getClusterSingleton(diName, true)
 }
