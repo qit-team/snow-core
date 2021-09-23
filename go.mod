@@ -10,7 +10,7 @@ require (
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
-	github.com/gin-gonic/gin v1.4.0
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-redis/redis/v8 v8.10.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gogap/errors v0.0.0-20200228125012-531a6449b28c
