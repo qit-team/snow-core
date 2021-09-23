@@ -90,6 +90,6 @@ type RocketMqConfig struct {
 }
 
 type SkyWalkingConfig struct {
-	SkyWalkingEnable    bool
-	SkyWalkingOapServer string
+	Enable    bool
+	OapServer string
 }

@@ -78,8 +78,8 @@ func (p *provider) Close() error {
 	return nil
 }
 func initTracer(conf config.RedisConfig) (*go2sky.Tracer, error) {
-	if conf.Option.SkyWalking.SkyWalkingEnable && len(conf.Option.SkyWalking.SkyWalkingOapServer) > 0 {
-		report, err := reporter.NewGRPCReporter(conf.Option.SkyWalking.SkyWalkingOapServer)
+	if conf.Option.SkyWalking.Enable && len(conf.Option.SkyWalking.OapServer) > 0 {
+		report, err := reporter.NewGRPCReporter(conf.Option.SkyWalking.OapServer)
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +106,7 @@ func setSingleton(diName string, conf config.RedisConfig) (ins *goredis.Client, 
 		container.App.SetSingleton(diName, ins)
 	}
 
-	if ins != nil && conf.Option.SkyWalking.SkyWalkingEnable && len(conf.Option.SkyWalking.SkyWalkingOapServer) > 0 {
+	if ins != nil && conf.Option.SkyWalking.Enable && len(conf.Option.SkyWalking.OapServer) > 0 {
 		tracer, err2 := initTracer(conf)
 		if err2 != nil || tracer == nil {
 			fmt.Println("redis SkyWalking tracer is nil or create failed")
