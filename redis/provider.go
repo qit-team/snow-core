@@ -83,8 +83,8 @@ func initTracer(conf config.RedisConfig) (*go2sky.Tracer, error) {
 		if err != nil {
 			return nil, err
 		}
-		rdsName := fmt.Sprintf("%s:%d", conf.Master.Host, conf.Master.Port)
-		tracer, err := go2sky.NewTracer(rdsName, go2sky.WithReporter(report))
+		serviceName := fmt.Sprintf("%s:%d", conf.Master.Host, conf.Master.Port)
+		tracer, err := go2sky.NewTracer(serviceName, go2sky.WithReporter(report))
 		if err != nil {
 			return nil, err
 		}
@@ -113,7 +113,7 @@ func setSingleton(diName string, conf config.RedisConfig) (ins *goredis.Client, 
 			return
 		}
 
-		hook := NewSkywalkingHook(tracer)
+		hook := NewSkyWalkingHook(tracer)
 		if hook == nil {
 			fmt.Println("redis SkyWalking hook is nil")
 			return

@@ -2,8 +2,8 @@ package redis
 
 import (
 	"errors"
+	"fmt"
 	goredis "github.com/go-redis/redis/v8"
-	"github.com/gogf/gf/util/gconv"
 	redis_pool "github.com/hetiansu5/go-redis-pool"
 	"github.com/qit-team/snow-core/config"
 	"time"
@@ -16,7 +16,7 @@ func NewRedisClient(redisConf config.RedisConfig) (*goredis.Client, error) {
 	}
 
 	rdb := goredis.NewClient(&goredis.Options{
-		Addr:     redisConf.Master.Host + ":" + gconv.String(redisConf.Master.Port),
+		Addr:     fmt.Sprintf("%s:%d", redisConf.Master.Host, redisConf.Master.Port),
 		Password: redisConf.Master.Password,
 		DB:       redisConf.Master.DB,
 	})
@@ -30,12 +30,12 @@ func NewClusterRedisClient(redisConf config.RedisConfig) (*goredis.ClusterClient
 	}
 
 	addrs := []string{}
-	addrs = append(addrs,redisConf.Master.Host+":"+gconv.String(redisConf.Master.Port))
-	for _,slave :=range  redisConf.Slaves{
-		addrs = append(addrs,slave.Host+":"+gconv.String(slave.Port))
+	addrs = append(addrs, fmt.Sprintf("%s:%d", redisConf.Master.Host, redisConf.Master.Port))
+	for _, slave := range redisConf.Slaves {
+		addrs = append(addrs, fmt.Sprintf("%s:%d", slave.Host, slave.Port))
 	}
 	rdb := goredis.NewClusterClient(&goredis.ClusterOptions{
-		Addrs: addrs,
+		Addrs:    addrs,
 		Password: redisConf.Master.Password,
 	})
 	return rdb, nil

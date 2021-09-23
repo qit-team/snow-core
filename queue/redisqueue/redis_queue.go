@@ -48,7 +48,7 @@ func GetRedisQueue(diName string) queue.Queue {
  */
 func (m *RedisQueue) Enqueue(ctx context.Context, key string, message string, args ...interface{}) (bool, error) {
 	//redis暂时不要延迟和优先级
-	_, err := m.client.RPush(ctx,key, message).Result()
+	_, err := m.client.RPush(ctx, key, message).Result()
 	if err != nil {
 		return false, err
 	}
@@ -61,7 +61,7 @@ func (m *RedisQueue) Enqueue(ctx context.Context, key string, message string, ar
 func (m *RedisQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, tag string, token string, dequeueCount int64, err error) {
 	// redis 出队次数暂用1 目前不支持统计这个次数
 	dequeueCount = 0
-	message, err = m.client.LPop(ctx,key).Result()
+	message, err = m.client.LPop(ctx, key).Result()
 	if err == redis_pool.ErrNil {
 		err = nil
 		message = ""
@@ -84,7 +84,7 @@ func (m *RedisQueue) BatchEnqueue(ctx context.Context, key string, messages []st
 	if len(messages) == 0 {
 		return false, errors.New("messages is empty")
 	}
-	_, err := m.client.RPush(ctx,key, arrayStringToInterface(messages)...).Result()
+	_, err := m.client.RPush(ctx, key, arrayStringToInterface(messages)...).Result()
 	if err != nil {
 		return false, err
 	}
