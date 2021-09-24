@@ -22,7 +22,6 @@ type RedisOptionConfig struct {
 	ConnectTimeout time.Duration
 	ReadTimeout    time.Duration
 	WriteTimeout   time.Duration
-	SkyWalking SkyWalkingConfig
 }
 
 type RedisConfig struct {
@@ -87,9 +86,4 @@ type RocketMqConfig struct {
 	InstanceId      string
 	ConsumerOptions []consumer.Option
 	ProducerOptions []producer.Option
-}
-
-type SkyWalkingConfig struct {
-	SkyWalkingEnable        bool
-	SkyWalkingOapServer     string
 }

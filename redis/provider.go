@@ -3,8 +3,6 @@ package redis
 import (
 	"errors"
 	"fmt"
-	"github.com/SkyAPM/go2sky"
-	"github.com/SkyAPM/go2sky/reporter"
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/helper"
@@ -77,24 +75,6 @@ func (p *provider) Close() error {
 	}
 	return nil
 }
-func initTracer(conf config.RedisConfig) (*go2sky.Tracer, error) {
-	if conf.Option.SkyWalking.SkyWalkingEnable && len(conf.Option.SkyWalking.SkyWalkingOapServer) > 0 {
-		report, err := reporter.NewGRPCReporter(conf.Option.SkyWalking.SkyWalkingOapServer)
-		if err != nil {
-			return nil, err
-		}
-		rdsName := fmt.Sprintf("%s:%d", conf.Master.Host, conf.Master.Port)
-		tracer, err := go2sky.NewTracer(rdsName, go2sky.WithReporter(report))
-		if err != nil {
-			return nil, err
-		}
-		if tracer == nil {
-			return nil, err
-		}
-		return tracer, nil
-	}
-	return nil, nil
-}
 
 //注入单例
 func setSingleton(diName string, conf config.RedisConfig) (ins *goredis.Client, err error) {
@@ -104,21 +84,6 @@ func setSingleton(diName string, conf config.RedisConfig) (ins *goredis.Client, 
 	}
 	if ins != nil {
 		container.App.SetSingleton(diName, ins)
-	}
-
-	if ins != nil && conf.Option.SkyWalking.SkyWalkingEnable && len(conf.Option.SkyWalking.SkyWalkingOapServer) > 0 {
-		tracer, err2 := initTracer(conf)
-		if err2 != nil || tracer == nil {
-			fmt.Println("redis SkyWalking tracer is nil or create failed")
-			return
-		}
-
-		hook := NewSkywalkingHook(tracer)
-		if hook == nil {
-			fmt.Println("redis SkyWalking hook is nil")
-			return
-		}
-		GetRedis(diName).AddHook(hook)
 	}
 	return
 }

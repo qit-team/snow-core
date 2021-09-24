@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"github.com/qit-team/snow-core/config"
 	"reflect"
 	"strconv"
@@ -33,14 +34,14 @@ func TestGetSet(t *testing.T) {
 	}
 
 	value := 11
-	res, _ := client.Set("hts", value)
+	res, _ := client.Set(context.TODO(), "hts", value, 100).Result()
 	t.Log(res, reflect.TypeOf(res))
-	if res == false {
+	if res == "" {
 		t.Error("set error")
 		return
 	}
 
-	res1, _ := client.Get("hts")
+	res1, _ := client.Get(context.TODO(), "hts").Result()
 	t.Log(res1, reflect.TypeOf(res1))
 	if res1 == "" {
 		t.Error("get error")
