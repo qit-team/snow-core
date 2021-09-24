@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	goredis "github.com/go-redis/redis/v8"
-	redis_pool "github.com/hetiansu5/go-redis-pool"
 	"github.com/qit-team/snow-core/queue"
 	"github.com/qit-team/snow-core/redis"
 	"sync"
@@ -62,7 +61,7 @@ func (m *RedisQueue) Dequeue(ctx context.Context, key string, args ...interface{
 	// redis 出队次数暂用1 目前不支持统计这个次数
 	dequeueCount = 0
 	message, err = m.client.LPop(ctx, key).Result()
-	if err == redis_pool.ErrNil {
+	if err == goredis.Nil {
 		err = nil
 		message = ""
 	}
