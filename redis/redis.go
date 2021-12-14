@@ -4,10 +4,25 @@ import (
 	"errors"
 	"fmt"
 	goredis "github.com/go-redis/redis/v8"
-	redis_pool "github.com/hetiansu5/go-redis-pool"
 	"github.com/qit-team/snow-core/config"
 	"time"
 )
+
+type RedisConfig struct {
+	Host     string
+	Port     int
+	Password string
+	DB       int
+}
+type Options struct {
+	MaxIdle        int
+	MaxActive      int
+	Wait           bool
+	IdleTimeout    time.Duration
+	ConnectTimeout time.Duration
+	ReadTimeout    time.Duration
+	WriteTimeout   time.Duration
+}
 
 //redis连接池实例，不对外暴露，通过redis_service_provider实现依赖注入和资源获取
 func NewRedisClient(redisConf config.RedisConfig) (*goredis.Client, error) {
@@ -41,8 +56,8 @@ func NewClusterRedisClient(redisConf config.RedisConfig) (*goredis.ClusterClient
 	return rdb, nil
 }
 
-func genRedisConfig(c config.RedisBaseConfig) redis_pool.RedisConfig {
-	return redis_pool.RedisConfig{
+func genRedisConfig(c config.RedisBaseConfig) RedisConfig {
+	return RedisConfig{
 		Host:     c.Host,
 		Port:     c.Port,
 		Password: c.Password,
@@ -50,8 +65,8 @@ func genRedisConfig(c config.RedisBaseConfig) redis_pool.RedisConfig {
 	}
 }
 
-func genOptions(c config.RedisOptionConfig) redis_pool.Options {
-	return redis_pool.Options{
+func genOptions(c config.RedisOptionConfig) Options {
+	return Options{
 		MaxIdle:        c.MaxIdle,
 		MaxActive:      c.MaxConns,
 		Wait:           c.Wait,

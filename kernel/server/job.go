@@ -10,7 +10,7 @@ func waitJobStop(job *work.Job) {
 	//等待结束
 	WaitStop()
 
-	//暂停新的Cron任务执行
+	//暂停新的job任务执行
 	job.Stop()
 
 	err := job.WaitStop(60 * time.Second)

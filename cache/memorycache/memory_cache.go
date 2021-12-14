@@ -42,7 +42,7 @@ func newMemoryCache() cache.Cache {
 }
 
 //单例模式
-func GetRedisCache(diName string) cache.Cache {
+func GetMemoryCache(diName string) cache.Cache {
 	key := diName
 	mu.RLock()
 	q, ok := mp[key]
@@ -211,5 +211,5 @@ func interfaceToInt64(value interface{}) (int64, error) {
 
 func init() {
 	mp = make(map[string]cache.Cache)
-	cache.Register(cache.DriverTypeMemory, GetRedisCache)
+	cache.Register(cache.DriverTypeMemory, GetMemoryCache)
 }
