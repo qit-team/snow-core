@@ -26,7 +26,7 @@ type AliyunMq struct {
 	client mq_http_sdk.MQClient
 }
 
-//new实例
+// new实例
 func newAliyunMq(diName string) queue.Queue {
 	m := new(AliyunMq)
 	m.client = aliyunmq.GetAliyunMq(diName)
@@ -34,7 +34,7 @@ func newAliyunMq(diName string) queue.Queue {
 	return m
 }
 
-//单例模式
+// 单例模式
 func GetAliyunRocketQueue(diName string) queue.Queue {
 	key := diName
 	mu.RLock()
@@ -66,7 +66,6 @@ func (m *AliyunMq) Enqueue(ctx context.Context, key string, message string, args
 	mqMsg := mq_http_sdk.PublishMessageRequest{
 		MessageBody: message,
 	}
-
 	_, err := mqProducer.PublishMessage(mqMsg)
 	if err != nil {
 		return false, err

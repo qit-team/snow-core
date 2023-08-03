@@ -3,11 +3,12 @@ package rocketqueue
 import (
 	"context"
 	"fmt"
-	"github.com/qit-team/snow-core/log/logger"
 	"io/ioutil"
 	"log"
 	"strings"
 	"testing"
+
+	"github.com/qit-team/snow-core/log/logger"
 
 	"github.com/qit-team/snow-core/config"
 	"github.com/qit-team/snow-core/queue"
@@ -175,7 +176,7 @@ func TestBatchEnqueueEmpty(t *testing.T) {
 }
 
 func Test_getOption(t *testing.T) {
-	instanceId, groupId, _ := getOption("", "GID-SNOW-TOPIC-TEST")
+	instanceId, groupId, _, _ := getOption("", "GID-SNOW-TOPIC-TEST")
 	if instanceId != "" {
 		t.Errorf("delay is not equal 1. %s", instanceId)
 	} else if groupId != "GID-SNOW-TOPIC-TEST" {

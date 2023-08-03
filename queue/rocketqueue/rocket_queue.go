@@ -35,11 +35,11 @@ type RocketQueue struct {
 	producerOnce sync.Once
 }
 
-func (rq *RocketQueue) initProducer(ctx context.Context) error {
+func (m *RocketQueue) initProducer(ctx context.Context) error {
 	var err error
-	rq.producerOnce.Do(
+	m.producerOnce.Do(
 		func() {
-			err = rq.Producer.Start()
+			err = m.Producer.Start()
 			if err != nil {
 				logger.Fatal(ctx, "RocketQueue:Producer:Start", err.Error())
 				return
@@ -48,11 +48,11 @@ func (rq *RocketQueue) initProducer(ctx context.Context) error {
 	return err
 }
 
-func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag string, num int) error {
+func (m *RocketQueue) initConsumer(ctx context.Context, topic, messageTag string, num int) error {
 	var err error
-	rq.consumerOnce.Do(
+	m.consumerOnce.Do(
 		func() {
-			rq.consumerMessageChan = make(chan *primitive.MessageExt, num)
+			m.consumerMessageChan = make(chan *primitive.MessageExt, num)
 
 			var selector consumer.MessageSelector
 			if len(messageTag) > 0 {
@@ -61,10 +61,10 @@ func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag strin
 					Expression: messageTag,
 				}
 			}
-			err = rq.Consumer.Subscribe(topic, selector, func(ctx context.Context, messages ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
+			err = m.Consumer.Subscribe(topic, selector, func(ctx context.Context, messages ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 				// 取到的消息放入管道，交给下游处理
 				for _, msg := range messages {
-					rq.consumerMessageChan <- msg
+					m.consumerMessageChan <- msg
 				}
 
 				return consumer.ConsumeSuccess, nil
@@ -74,7 +74,7 @@ func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag strin
 				return
 			}
 
-			err = rq.Consumer.Start()
+			err = m.Consumer.Start()
 			if err != nil {
 				logger.Fatal(ctx, "RocketQueue:Start", err.Error())
 				return
@@ -95,8 +95,8 @@ func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag strin
 					sig := <-c //blocked
 					switch sig {
 					case syscall.SIGINT, syscall.SIGTERM:
-						close(rq.consumerMessageChan)
-						err = rq.Consumer.Shutdown()
+						close(m.consumerMessageChan)
+						err = m.Consumer.Shutdown()
 						if err != nil {
 							logger.Error(ctx, "Shutdown.Failure", err.Error())
 							return
@@ -116,7 +116,7 @@ func (rq *RocketQueue) initConsumer(ctx context.Context, topic, messageTag strin
 	return nil
 }
 
-//new实例
+// new实例
 func newRocketQueue(diName string) queue.Queue {
 	m := new(RocketQueue)
 	client := rkmq.GetRocketMq(diName)
@@ -127,7 +127,9 @@ func newRocketQueue(diName string) queue.Queue {
 	return m
 }
 
-//单例模式
+// GetRocketQueue
+//
+// 单例模式
 func GetRocketQueue(diName string) queue.Queue {
 	key := diName
 	mu.RLock()
@@ -145,18 +147,15 @@ func GetRocketQueue(diName string) queue.Queue {
 	return q
 }
 
-/**
- * 队列消息入队
- * args[0] instanceId
- */
+// Enqueue 队列消息入队
+//
+// args[0] instanceId
 func (m *RocketQueue) Enqueue(ctx context.Context, key string, message string, args ...interface{}) (bool, error) {
-
 	err := m.initProducer(ctx)
 	if err != nil {
 		return false, err
 	}
-
-	_, _, messageTag := getOption(args...)
+	_, _, messageTag, timeLevel := getOption(args...)
 	log.Printf("messageTag: %v", messageTag)
 	if len(messageTag) > 0 {
 		tags := strings.Split(messageTag, "||")
@@ -167,6 +166,10 @@ func (m *RocketQueue) Enqueue(ctx context.Context, key string, message string, a
 				Body:  []byte(message),
 			}
 			msg.WithTag(tag)
+			// https://rocketmq.apache.org/docs/4.x/producer/04message3/
+			if timeLevel > 0 && timeLevel <= 18 {
+				msg.WithDelayTimeLevel(timeLevel)
+			}
 			log.Printf("send for tag: %v", tag)
 			res, err := m.Producer.SendSync(context.Background(), msg)
 			if err != nil {
@@ -180,6 +183,10 @@ func (m *RocketQueue) Enqueue(ctx context.Context, key string, message string, a
 			Topic: key,
 			Body:  []byte(message),
 		}
+		// https://rocketmq.apache.org/docs/4.x/producer/04message3/
+		if timeLevel > 0 && timeLevel <= 18 {
+			msg.WithDelayTimeLevel(timeLevel)
+		}
 		res, err := m.Producer.SendSync(ctx, msg)
 		if err != nil {
 			return false, err
@@ -191,13 +198,13 @@ func (m *RocketQueue) Enqueue(ctx context.Context, key string, message string, a
 	return true, nil
 }
 
-/**
-* 队列消息出队
-* param 第二个参数是队列名称，args[0]是instanceId，args[1]是groupId，目前只有rocketmq需要groupId
-* return 第一个参数是消息 第二个参数是aliyunmq的ReceiptHandle命名为token，通过token确定消息是否从队列删除，第三个参数为消费次数
- */
+// Dequeue 队列消息出队
+//
+// param 第二个参数是队列名称，args[0]是instanceId，args[1]是groupId，目前只有rocketmq需要groupId
+//
+// return 第一个参数是消息 第二个参数是aliyunmq的ReceiptHandle命名为token，通过token确定消息是否从队列删除，第三个参数为消费次数
 func (m *RocketQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, tag string, token string, dequeueCount int64, err error) {
-	_, _, messageTag := getOption(args...)
+	_, _, messageTag, _ := getOption(args...)
 
 	err = m.initConsumer(ctx, key, messageTag, 5)
 	if err != nil {
@@ -213,11 +220,9 @@ func (m *RocketQueue) Dequeue(ctx context.Context, key string, args ...interface
 	}
 }
 
-/**
- * 队列消息批量入队
- * args[0] instanceId
- * 注：rocket其实没有批量函数，所以循环调用publishMsg方法
- */
+// BatchEnqueue 队列消息批量入队
+// args[0] instanceId
+// 注：rocket其实没有批量函数，所以循环调用publishMsg方法
 func (m *RocketQueue) BatchEnqueue(ctx context.Context, key string, messageList []string, args ...interface{}) (bool, error) {
 	if len(messageList) == 0 {
 		return false, errors.New("messageList is empty")
@@ -233,21 +238,20 @@ func (m *RocketQueue) BatchEnqueue(ctx context.Context, key string, messageList 
 	return true, nil
 }
 
-/**
- * 确认消息接收
- * args[0]是instanceId，args[1]是groupId，args[2]是messageTag
- */
+// AckMsg 确认消息接收
+// args[0]是instanceId，args[1]是groupId，args[2]是messageTag, args[2]是delayTimeLevel
 func (m *RocketQueue) AckMsg(ctx context.Context, key string, token string, args ...interface{}) (bool, error) {
 	return true, nil
 }
 
-// 缺省参数统一获取
-// args[0]是instanceId，args[1]是groupId，args[2]是messageTag
-func getOption(args ...interface{}) (instanceId, groupId, messageTag string) {
+// getOption 缺省参数统一获取
+//
+// args[0]是instanceId，args[1]是groupId，args[2]是messageTag, args[3]是delayTimeLevel
+func getOption(args ...interface{}) (instanceId, groupId, messageTag string, delayTimeLevel int) {
 	instanceId = ""
 	groupId = ""
 	messageTag = ""
-
+	delayTimeLevel = 0
 	l := len(args)
 	if l > 0 {
 		tempInstance, ok := args[0].(string)
@@ -264,6 +268,12 @@ func getOption(args ...interface{}) (instanceId, groupId, messageTag string) {
 			tempTag, ok := args[2].(string)
 			if ok {
 				messageTag = tempTag
+			}
+		}
+		if l > 3 {
+			tempDelayTimeLevel, ok := args[3].(int)
+			if ok {
+				delayTimeLevel = tempDelayTimeLevel
 			}
 		}
 	}
