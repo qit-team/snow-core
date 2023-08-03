@@ -18,14 +18,14 @@ type RedisCache struct {
 	client *goredis.Client
 }
 
-//实例模式
+// 实例模式
 func newRedisCache(diName string) cache.Cache {
 	m := new(RedisCache)
 	m.client = redis.GetRedis(diName)
 	return m
 }
 
-//单例模式
+// 单例模式
 func GetRedisCache(diName string) cache.Cache {
 	key := diName
 	mu.RLock()

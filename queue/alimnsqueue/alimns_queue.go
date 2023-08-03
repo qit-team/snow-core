@@ -75,6 +75,7 @@ func (m *MnsQueue) Enqueue(ctx context.Context, key string, message string, args
 
 /**
  * 队列消息出队
+ * args[0] 消息下次可见时间
  * return 第一个参数是消息 第二个参数是mns的ReceiptHandle命名为token，通过token确定消息是否从队列删除
  */
 func (m *MnsQueue) Dequeue(ctx context.Context, key string, args ...interface{}) (message string, tag string, token string, dequeueCount int64, err error) {
@@ -91,8 +92,16 @@ func (m *MnsQueue) Dequeue(ctx context.Context, key string, args ...interface{})
 
 	select {
 	case resp := <-respChan:
+		visibilityTimeout := DefaultVisibilityTimeout
+		l := len(args)
+		if l > 0 {
+			vt, ok := args[0].(int64)
+			if ok {
+				visibilityTimeout = vt
+			}
+		}
 		//代表N秒内其他并发队列不可见这条消息
-		if ret, err1 := queueClient.ChangeMessageVisibility(resp.ReceiptHandle, DefaultVisibilityTimeout); err1 != nil {
+		if ret, err1 := queueClient.ChangeMessageVisibility(resp.ReceiptHandle, visibilityTimeout); err1 != nil {
 			err = err1
 		} else {
 			//处理resp.MessageBody 阿里这什么sdk 也不说明各个函数作用。。。暂时就按照demo例子里用到的函数写了
